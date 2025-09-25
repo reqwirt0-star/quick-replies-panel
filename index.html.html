@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Quick Replies Panel - ENG & RU (Official)</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f9;
+      padding: 20px;
+    }
+    h2 {
+      margin-bottom: 10px;
+      color: #333;
+    }
+    .section {
+      margin-bottom: 40px;
+      padding: 20px;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    button {
+      display: block;
+      margin: 10px 0;
+      padding: 12px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background: #4a90e2;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #357ab7;
+    }
+    .lang-title {
+      font-size: 18px;
+      margin-bottom: 10px;
+      font-weight: bold;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== ENG SECTION ===== -->
+  <div class="section">
+    <div class="lang-title">English Section</div>
+    <h2>ENG Greetings</h2>
+    <button onclick="copyGreetingENG()">Copy Greeting</button>
+
+    <h2>ENG Job Description</h2>
+    <button onclick="copyJobENG()">Copy Job Description</button>
+
+    <h2>ENG Flirt Closing (Test Assignment)</h2>
+    <button onclick="copyFlirtENG()">Copy Flirt Closing</button>
+  </div>
+
+  <!-- ===== RU SECTION ===== -->
+  <div class="section">
+    <div class="lang-title">Русский раздел (официальный стиль)</div>
+    <h2>RU Приветствие</h2>
+    <button onclick="copyGreetingRU()">Скопировать приветствие</button>
+
+    <h2>RU Описание вакансии</h2>
+    <button onclick="copyJobRU()">Скопировать описание вакансии</button>
+
+    <h2>RU Инструкция для тестового задания</h2>
+    <button onclick="copyFlirtRU()">Скопировать инструкцию</button>
+  </div>
+
+<script>
+  // ------------------ ENG ------------------
+  const greetingsENG = [
+    "Good day! We are ChaterLab. Do you have experience working in marriage agencies?",
+    "Good day! This is ChaterLab. Have you ever worked in marriage agencies?",
+    "Good day! ChaterLab would like to know if you have experience in marriage agencies?",
+    "Good day! Representing ChaterLab. Have you previously worked in marriage agencies?",
+    "Good day! We are ChaterLab. Are you experienced in marriage agencies?",
+    "Good day! This is ChaterLab. Have you been involved with marriage agencies before?",
+    "Good day! ChaterLab is interested in your experience with marriage agencies.",
+    "Good day! We represent ChaterLab. Have you ever worked in marriage agencies?",
+    "Good day! ChaterLab asks if you have prior experience in marriage agencies.",
+    "Good day! We are ChaterLab. Have you worked with marriage agencies before?",
+    "Good day! Representing ChaterLab. Do you have any experience in marriage agencies?",
+    "Good day! ChaterLab would like to know about your experience in marriage agencies.",
+    "Good day! We are ChaterLab. Have you got experience in marriage agencies?",
+    "Good day! This is ChaterLab. Have you worked in marriage agencies previously?",
+    "Good day! ChaterLab asks if you have experience working in marriage agencies."
+  ];
+  let greetingENGIndex = 0;
+  function copyGreetingENG(){
+    navigator.clipboard.writeText(greetingsENG[greetingENGIndex]);
+    greetingENGIndex = (greetingENGIndex + 1) % greetingsENG.length;
+    alert("Copied Greeting:\n"+greetingsENG[greetingENGIndex]);
+  }
+
+  const jobDescriptionsENG = [
+`Job Description:
+📌 Task: Communicate on behalf of girls with foreign men via chat and letters. Each outgoing message from a man is paid.
+📌 Topic: Flirting and dating.
+📌 Goal: Gifts, the man's arrival in the girl's city, and meetings.
+📌 Requirements: High-speed internet and a laptop.
+📌 Schedule: 06-14, 14-22, 22-06, 6 days a week, 1 day off.
+💵 Paid internship: 1-7 days.
+💵 Payment: After first week, then on the 20th of each month.
+💵 Rate: 40% of correspondence balance.
+Which shift suits you best?`
+  ];
+  let jobENGIndex = 0;
+  function copyJobENG(){
+    navigator.clipboard.writeText(jobDescriptionsENG[jobENGIndex]);
+    jobENGIndex = (jobENGIndex + 1) % jobDescriptionsENG.length;
+    alert("Copied Job Description:\n"+jobDescriptionsENG[jobENGIndex]);
+  }
+
+  const flirtsENG = [
+    "Please make 10 phrases for flirting, following the example.",
+    "Kindly create 10 flirting phrases according to the example.",
+    "Write 10 flirt messages, following the example provided.",
+    "Make 10 flirting phrases, based on the sample.",
+    "Please generate 10 flirt phrases following the given example.",
+    "Create 10 flirting sentences according to the example.",
+    "Write 10 phrases for flirting, using the example as a guide.",
+    "Please compose 10 flirting phrases following the example.",
+    "Make 10 flirt messages based on the provided example.",
+    "Generate 10 phrases for flirting according to the example.",
+    "Create 10 flirt sentences following the given sample.",
+    "Please write 10 flirting messages using the example.",
+    "Compose 10 phrases for flirting, following the model provided.",
+    "Kindly make 10 flirting phrases, following the example.",
+    "Write 10 flirt sentences based on the example given."
+  ];
+  let flirtENGIndex = 0;
+  function copyFlirtENG(){
+    navigator.clipboard.writeText(flirtsENG[flirtENGIndex]);
+    flirtENGIndex = (flirtENGIndex + 1) % flirtsENG.length;
+    alert("Copied Flirt Closing Instruction:\n"+flirtsENG[flirtENGIndex]);
+  }
+
+  // ------------------ RU ------------------
+  const greetingsRU = [
+    "Добрый день! Мы компания ChaterLab. Есть ли у вас опыт работы в брачных агентствах?",
+    "Добрый день! Представляем ChaterLab. Обладаете ли вы опытом работы в брачных агентствах?",
+    "Добрый день! Компания ChaterLab интересуется, есть ли у вас опыт работы в брачных агентствах?",
+    "Добрый день! Мы из ChaterLab. Приходилось ли вам работать в брачных агентствах?",
+    "Добрый день! ChaterLab запрашивает информацию о вашем опыте работы в брачных агентствах.",
+    "Добрый день! Представляем ChaterLab. Работали ли вы ранее с брачными агентствами?",
+    "Добрый день! Мы компания ChaterLab. Имеется ли у вас практика работы в брачных агентствах?",
+    "Добрый день! ChaterLab интересуется вашим опытом работы с брачными агентствами.",
+    "Добрый день! Мы из ChaterLab. Обладаете ли вы опытом работы в брачных агентствах?",
+    "Добрый день! Компания ChaterLab интересуется, есть ли у вас профессиональный опыт работы в брачных агентствах?",
+    "Добрый день! ChaterLab запрашивает сведения о вашем опыте работы в брачных агентствах.",
+    "Добрый день! Представляем ChaterLab. Есть ли у вас предыдущий опыт работы в брачных агентствах?",
+    "Добрый день! Мы компания ChaterLab. Работали ли вы с брачными агентствами ранее?",
+    "Добрый день! ChaterLab интересуется, имеется ли у вас опыт работы с брачными агентствами?",
+    "Добрый день! Компания ChaterLab запрашивает информацию о вашем опыте работы в брачных агентствах."
+  ];
+  let greetingRUIndex = 0;
+  function copyGreetingRU(){
+    navigator.clipboard.writeText(greetingsRU[greetingRUIndex]);
+    greetingRUIndex = (greetingRUIndex + 1) % greetingsRU.length;
+    alert("Приветствие скопировано:\n"+greetingsRU[greetingRUIndex]);
+  }
+
+  const jobDescriptionsRU = [
+`Описание вакансии:
+📌 Задача: Общаться от имени девушек с иностранными мужчинами через чат и письма. Каждое исходящее сообщение оплачивается.
+📌 Тема: Флирт и знакомства.
+📌 Цель: Подарки, приезд мужчины в город девушки и встречи.
+📌 Требования: Высокоскоростной интернет и ноутбук.
+📌 График работы: 06-14, 14-22, 22-06, 6 дней в неделю, 1 выходной (Kyiv time)
+💵 Оплачиваемая стажировка: 1-7 дней.
+💵 Выплата: после первой недели, далее 20 числа.
+💵 Ставка: 40% от баланса переписки.
+Какой график вам наиболее удобен?`
+  ];
+  let jobRUIndex = 0;
+  function copyJobRU(){
+    navigator.clipboard.writeText(jobDescriptionsRU[jobRUIndex]);
+    jobRUIndex = (jobRUIndex + 1) % jobDescriptionsRU.length;
+    alert("Описание вакансии скопировано:\n"+jobDescriptionsRU[jobRUIndex]);
+  }
+
+  const flirtsRU = [
+    "Пожалуйста, составьте 10 фраз для флирта на основе приведённого примера.",
+    "Составьте 10 флирт-фраз согласно предоставленному образцу.",
+    "Напишите 10 сообщений для флирта, следуя примеру.",
+    "Создайте 10 флирт-фраз по образцу.",
+    "Сгенерируйте 10 фраз для флирта на основе примера.",
+    "Составьте 10 предложений для флирта согласно образцу.",
+    "Подготовьте 10 флирт-фраз, используя пример как руководство.",
+    "Пожалуйста, подготовьте 10 фраз для флирта, следуя примеру.",
+    "Составьте 10 сообщений для флирта по предоставленному образцу.",
+    "Сгенерируйте 10 флирт-фраз согласно предоставленному примеру.",
+    "Создайте 10 предложений для флирта по образцу.",
+    "Пожалуйста, напишите 10 сообщений для флирта, используя пример.",
+    "Составьте 10 фраз для флирта, следуя модели примера.",
+    "Пожалуйста, создайте 10 флирт-фраз, следуя примеру.",
+    "Напишите 10 флирт-предложений на основе предоставленного образца."
+  ];
+  let flirtRUIndex = 0;
+  function copyFlirtRU(){
+    navigator.clipboard.writeText(flirtsRU[flirtRUIndex]);
+    flirtRUIndex = (flirtRUIndex + 1) % flirtsRU.length;
+    alert("Инструкция для тестового задания скопирована:\n"+flirtsRU[flirtRUIndex]);
+  }
+</script>
+
+</body>
+</html>
