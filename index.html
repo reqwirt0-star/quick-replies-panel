@@ -6,23 +6,23 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f4f4f9;
+      background: #f0f2f5;
       padding: 20px;
+      color: #333;
     }
     h2 {
       margin-bottom: 10px;
-      color: #333;
     }
     .section {
       margin-bottom: 40px;
-      padding: 20px;
+      padding: 25px;
       background: #ffffff;
       border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
     }
     button {
       display: block;
-      margin: 10px 0;
+      margin: 12px 0;
       padding: 12px 20px;
       font-size: 16px;
       border: none;
@@ -30,16 +30,27 @@
       background: #4a90e2;
       color: white;
       cursor: pointer;
-      transition: background 0.3s;
+      transition: all 0.3s;
     }
     button:hover {
       background: #357ab7;
+      transform: translateY(-2px);
     }
     .lang-title {
       font-size: 18px;
       margin-bottom: 10px;
       font-weight: bold;
       color: #555;
+    }
+    .note {
+      background: #eef2f7;
+      padding: 12px 15px;
+      border-left: 4px solid #4a90e2;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      font-size: 14px;
+      color: #333;
+      line-height: 1.5;
     }
   </style>
 </head>
@@ -48,6 +59,9 @@
   <!-- ===== ENG SECTION ===== -->
   <div class="section">
     <div class="lang-title">English Section</div>
+    <div class="note">
+      This panel allows you to quickly copy professional greetings, job descriptions, and test assignment instructions for ChaterLab. Each click will copy the text to your clipboard and cycle through alternative versions to avoid spam bans.
+    </div>
     <h2>ENG Greetings</h2>
     <button onclick="copyGreetingENG()">Copy Greeting</button>
 
@@ -60,7 +74,10 @@
 
   <!-- ===== RU SECTION ===== -->
   <div class="section">
-    <div class="lang-title">Русский раздел</div>
+    <div class="lang-title">Русский раздел (официальный стиль)</div>
+    <div class="note">
+      Эта панель позволяет быстро копировать профессиональные приветствия, описание вакансии и инструкции для тестового задания для ChaterLab. Каждый клик будет копировать текст в буфер обмена и показывать альтернативные варианты текста для во избежание блокировки за спам.
+    </div>
     <h2>RU Приветствие</h2>
     <button onclick="copyGreetingRU()">Скопировать приветствие</button>
 
@@ -211,4 +228,3 @@ Which shift suits you best?`
 
 </body>
 </html>
-
