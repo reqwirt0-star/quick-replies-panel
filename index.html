@@ -27,9 +27,11 @@
     main {
       display: flex;
       flex: 1;
+      flex-wrap: wrap;
     }
     .sidebar {
       width: 300px;
+      min-width: 250px;
       padding: 30px;
       border-right: 1px solid #f0f0f0;
       background-color: #fff;
@@ -60,9 +62,10 @@
       flex: 1;
       padding: 30px;
       background-color: #fefefe;
+      overflow-y: auto;
     }
     .info h3 {
-      font-size: 20px;
+      font-size: 22px;
       font-weight: 600;
       margin-bottom: 15px;
     }
@@ -89,6 +92,50 @@
       color: #fff;
       border-color: #007aff;
     }
+    /* ===== Инструкция ===== */
+    .instructions {
+      margin-top: 40px;
+    }
+    .step {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .step h4 {
+      margin: 0 0 10px;
+      font-size: 18px;
+      color: #007aff;
+    }
+    .step ul, .step ol {
+      padding-left: 18px;
+      margin: 10px 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    table th, table td {
+      border: 1px solid #e5e5e5;
+      padding: 8px;
+      font-size: 14px;
+    }
+    table th {
+      background: #f0f4ff;
+      text-align: left;
+    }
+    @media (max-width: 768px) {
+      main {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #f0f0f0;
+      }
+    }
   </style>
 </head>
 <body>
@@ -99,11 +146,13 @@
       <button onclick="copyGreetingENG()">Greeting (ENG)</button>
       <button onclick="copyJobENG()">Job Description (ENG)</button>
       <button onclick="copyFlirtENG()">Flirt Closing (ENG)</button>
+      <button onclick="copyContactENG()">Contact (ENG)</button>
 
       <h2>Русский</h2>
       <button onclick="copyGreetingRU()">Приветствие (RU)</button>
       <button onclick="copyJobRU()">Описание вакансии (RU)</button>
       <button onclick="copyFlirtRU()">Флирт-задание (RU)</button>
+      <button onclick="copyContactRU()">Контакт (RU)</button>
     </div>
 
     <div class="info">
@@ -111,54 +160,41 @@
         <button id="btnENG" class="active" onclick="setLanguage('ENG')">ENG</button>
         <button id="btnRU" onclick="setLanguage('RU')">RU</button>
       </div>
-      <h3>About this tool</h3>
+      <h3 id="infoHeader">About this tool</h3>
       <p id="infoText">This panel allows you to quickly copy professional greetings, job descriptions, and test assignment instructions for ChaterLab. Each click will copy the text to your clipboard and cycle through alternative versions to avoid spam bans.</p>
+      <div class="instructions" id="instructions">
+        </div>
     </div>
   </main>
-
   <script>
     let currentLang = 'ENG';
-    function setLanguage(lang){
-      currentLang = lang;
-      const infoText = document.getElementById('infoText');
-      if(lang === 'ENG'){
-        document.getElementById('btnENG').classList.add('active');
-        document.getElementById('btnRU').classList.remove('active');
-        infoText.textContent = "This panel allows you to quickly copy professional greetings, job descriptions, and test assignment instructions for ChaterLab. Each click will copy the text to your clipboard and cycle through alternative versions to avoid spam bans.";
-      } else {
-        document.getElementById('btnENG').classList.remove('active');
-        document.getElementById('btnRU').classList.add('active');
-        infoText.textContent = "Эта панель позволяет быстро копировать профессиональные приветствия, описание вакансии и инструкции для тестового задания для ChaterLab. Каждый клик будет копировать текст в буфер обмена и показывать альтернативные варианты текста для во избежание блокировки за спам.";
-      }
-    }
 
-    // ================== ENG ==================
+    // =========================================================================
+    // 1. АРХИВЫ С ТЕКСТАМИ И ИНДЕКСАМИ ДЛЯ ЦИКЛИЧЕСКОГО ПЕРЕКЛЮЧЕНИЯ
+    // =========================================================================
+
+    // ENGLISH ARRAYS AND INDEXES
     const greetingsENG = [
-      "Good day! We are ChaterLab. Do you have experience working in marriage agencies?",
-      "Good day! This is ChaterLab. Have you ever worked in marriage agencies?",
-      "Good day! ChaterLab would like to know if you have experience in marriage agencies?",
-      "Good day! Representing ChaterLab. Have you previously worked in marriage agencies?",
-      "Good day! We are ChaterLab. Are you experienced in marriage agencies?",
-      "Good day! This is ChaterLab. Have you been involved with marriage agencies before?",
-      "Good day! ChaterLab is interested in your experience with marriage agencies.",
-      "Good day! We represent ChaterLab. Have you ever worked in marriage agencies?",
-      "Good day! ChaterLab asks if you have prior experience in marriage agencies.",
-      "Good day! We are ChaterLab. Have you worked with marriage agencies before?",
-      "Good day! Representing ChaterLab. Do you have any experience in marriage agencies?",
-      "Good day! ChaterLab would like to know about your experience in marriage agencies.",
-      "Good day! We are ChaterLab. Have you got experience in marriage agencies?",
-      "Good day! This is ChaterLab. Have you worked in marriage agencies previously?",
-      "Good day! ChaterLab asks if you have experience working in marriage agencies."
+        "Good day! We are ChaterLab. Do you have experience working in marriage agencies?",
+        "Good day! This is ChaterLab. Have you ever worked in marriage agencies?",
+        "Good day! ChaterLab would like to know if you have experience in marriage agencies?",
+        "Good day! Representing ChaterLab. Have you previously worked in marriage agencies?",
+        "Good day! We are ChaterLab. Are you experienced in marriage agencies?",
+        "Good day! This is ChaterLab. Have you been involved with marriage agencies before?",
+        "Good day! ChaterLab is interested in your experience with marriage agencies.",
+        "Good day! We represent ChaterLab. Have you ever worked in marriage agencies?",
+        "Good day! ChaterLab asks if you have prior experience in marriage agencies.",
+        "Good day! We are ChaterLab. Have you worked with marriage agencies before?",
+        "Good day! Representing ChaterLab. Do you have any experience in marriage agencies?",
+        "Good day! ChaterLab would like to know about your experience in marriage agencies.",
+        "Good day! We are ChaterLab. Have you got experience in marriage agencies?",
+        "Good day! This is ChaterLab. Have you worked in marriage agencies previously?",
+        "Good day! ChaterLab asks if you have experience working in marriage agencies."
     ];
-    let greetingENGIndex = 0;
-    function copyGreetingENG(){
-      navigator.clipboard.writeText(greetingsENG[greetingENGIndex]);
-      alert("Copied Greeting:\n"+greetingsENG[greetingENGIndex]);
-      greetingENGIndex = (greetingENGIndex + 1) % greetingsENG.length;
-    }
+    let indexGreetingENG = 0;
 
     const jobDescriptionsENG = [
-`Job Description:
+        `Job Description:
 📌 Task: Communicate with foreign men on behalf of girls. All interaction is via chat and letters, no in-person meetings required.
 📌 Topic: Flirting and dating.
 📌 Goal: Gifts, organizing the man's visit, and meetings—without personal involvement.
@@ -168,8 +204,7 @@
 💵 Payment: After first week, then on the 20th of each month.
 💵 Rate: 40% of correspondence balance.
 Which shift suits you?`,
-
-`Job Description:
+        `Job Description:
 📌 Main task: Chat with foreign men as a representative of girls. Messages are paid individually. No face-to-face meetings.
 📌 Topic: Flirt and social communication.
 📌 Goal: Gifts, facilitating the man's visit, meetings without your presence.
@@ -179,8 +214,7 @@ Which shift suits you?`,
 💵 Payment: After first week and on the 20th each month.
 💵 Rate: 40%.
 Choose your preferred shift.`,
-
-`Job Description:
+        `Job Description:
 📌 Task: Professional messaging with foreign men on behalf of girls. No in-person meetings.
 📌 Topic: Flirt, online dating.
 📌 Goal: Gifts, organize visits and meetings, without personal participation.
@@ -190,8 +224,7 @@ Choose your preferred shift.`,
 💵 Payment: Weekly after first week, then monthly.
 💵 Rate: 40%.
 Which shift works best?`,
-
-`Job Description:
+        `Job Description:
 📌 Core task: Chat with foreign men as a girl’s representative. No physical meetings, paid per message.
 📌 Topic: Flirt, dating conversations.
 📌 Goal: Gifts, manage visits and meetings, without your attendance.
@@ -201,8 +234,7 @@ Which shift works best?`,
 💵 Payment: After first week, then monthly.
 💵 Rate: 40%.
 Pick your preferred shift.`,
-
-`Job Description:
+        `Job Description:
 📌 Task: Messaging foreign men on behalf of girls. Payment per message. No in-person meetings.
 📌 Topic: Flirt and online dating.
 📌 Goal: Gifts, coordinating visits and meetings without personal participation.
@@ -212,8 +244,7 @@ Pick your preferred shift.`,
 💵 Payment: After first week, then on 20th.
 💵 Rate: 40%.
 Which shift suits you?`,
-
-`Job Description:
+        `Job Description:
 📌 Task: Conduct chat conversations on behalf of girls. No face-to-face meetings.
 📌 Topic: Flirting, dating.
 📌 Goal: Gifts and managing men’s visits without your personal involvement.
@@ -223,8 +254,7 @@ Which shift suits you?`,
 💵 Payment: Weekly, then monthly.
 💵 Rate: 40%.
 Choose your shift.`,
-
-`Job Description:
+        `Job Description:
 📌 Task: Messaging foreign men from girls’ accounts. No in-person interactions.
 📌 Topic: Flirt, online communication.
 📌 Goal: Gifts, visits, meetings—without personal involvement.
@@ -234,8 +264,7 @@ Choose your shift.`,
 💵 Payment: After first week, then monthly.
 💵 Rate: 40%.
 Select your shift.`,
-
-`Job Description:
+        `Job Description:
 📌 Task: Chat professionally with foreign men as a girl’s representative. Messages paid individually. No meetings required.
 📌 Topic: Flirt, dating.
 📌 Goal: Gifts, organize visits and meetings without personal attendance.
@@ -245,8 +274,7 @@ Select your shift.`,
 💵 Payment: After first week, then 20th.
 💵 Rate: 40%.
 Which shift works best?`,
-
-`Job Description:
+        `Job Description:
 📌 Task: Conduct online conversations with foreign men on behalf of girls. No in-person meetings.
 📌 Topic: Flirt, romance.
 📌 Goal: Gifts and facilitating visits without candidate’s presence.
@@ -256,8 +284,7 @@ Which shift works best?`,
 💵 Payment: After first week and monthly.
 💵 Rate: 40%.
 Pick your preferred shift.`,
-
-`Job Description:
+        `Job Description:
 📌 Task: Professional chat with foreign men on behalf of girls. Payment per message. No physical meetings.
 📌 Topic: Flirt and dating.
 📌 Goal: Gifts, organize visits and meetings without personal involvement.
@@ -267,8 +294,7 @@ Pick your preferred shift.`,
 💵 Payment: Weekly, then monthly.
 💵 Rate: 40%.
 Which shift suits you?`,
-
-`Job Description:
+        `Job Description:
 📌 Task: Messaging foreign men as a girls’ representative. All work is online, no in-person meetings.
 📌 Topic: Flirt, online dating.
 📌 Goal: Gifts, coordinating visits and meetings without personal participation.
@@ -278,8 +304,7 @@ Which shift suits you?`,
 💵 Payment: After first week and 20th.
 💵 Rate: 40%.
 Choose your shift.`,
-
-`Job Description:
+        `Job Description:
 📌 Task: Conduct online conversations with foreign men on behalf of girls. Messages paid individually. No personal meetings.
 📌 Topic: Flirt and romance.
 📌 Goal: Gifts, organize visits and meetings without your attendance.
@@ -289,8 +314,7 @@ Choose your shift.`,
 💵 Payment: Weekly, then monthly.
 💵 Rate: 40%.
 Which shift works for you?`,
-
-`Job Description:
+        `Job Description:
 📌 Task: Chat on behalf of girls with foreign men. Payment per message. No in-person meetings required.
 📌 Topic: Flirt, dating communication.
 📌 Goal: Gifts, coordinate visits and meetings without personal involvement.
@@ -300,8 +324,7 @@ Which shift works for you?`,
 💵 Payment: After first week and 20th.
 💵 Rate: 40%.
 Pick your shift.`,
-
-`Job Description:
+        `Job Description:
 📌 Task: Chat professionally with foreign men as a representative of girls. No in-person meetings.
 📌 Topic: Flirt, romance.
 📌 Goal: Gifts, manage visits and meetings without personal attendance.
@@ -311,8 +334,7 @@ Pick your shift.`,
 💵 Payment: Weekly, then monthly.
 💵 Rate: 40%.
 Which shift do you prefer?`,
-
-`Job Description:
+        `Job Description:
 📌 Task: Professional messaging with foreign men on behalf of girls. All correspondence online, no in-person meetings.
 📌 Topic: Flirt and dating.
 📌 Goal: Gifts, organize visits and meetings without attending personally.
@@ -321,77 +343,70 @@ Which shift do you prefer?`,
 💵 Paid internship: 1-7 days.
 💵 Payment: After first week and 20th.
 💵 Rate: 40%.
-Which shift fits you best?`,
-
-`Job Description:
-📌 Task: Chat online with foreign men representing girls. Messages are paid individually, no face-to-face meetings.
-📌 Topic: Flirt and social interaction.
-📌 Goal: Gifts, coordinate visits and meetings without your participation.
-📌 Requirements: Laptop, internet.
-📌 Schedule: 6:00 AM - 2:00 PM, 2:00 PM - 10:00 PM, 10:00 PM - 6:00 AM, 6/1 week (Philippines time)
-💵 Paid internship: 1-7 days.
-💵 Payment: Weekly and 20th of each month.
-💵 Rate: 40%.
-Choose your preferred shift.`
+Which shift fits you best?`
     ];
-    let jobENGIndex = 0;
-    function copyJobENG(){
-      navigator.clipboard.writeText(jobDescriptionsENG[jobENGIndex]);
-      alert("Copied Job Description:\n"+jobDescriptionsENG[jobENGIndex]);
-      jobENGIndex = (jobENGIndex + 1) % jobDescriptionsENG.length;
-    }
-
-    const flirtsENG = [
-      "Please make 10 phrases for flirting, following the example.",
-      "Kindly create 10 flirting phrases according to the example.",
-      "Write 10 flirt messages, following the example provided.",
-      "Make 10 flirting phrases, based on the sample.",
-      "Please generate 10 flirt phrases following the given example.",
-      "Create 10 flirting sentences according to the example.",
-      "Write 10 phrases for flirting, using the example as a guide.",
-      "Please compose 10 flirting phrases following the example.",
-      "Make 10 flirt messages based on the provided example.",
-      "Generate 10 phrases for flirting according to the example.",
-      "Create 10 flirt sentences following the given sample.",
-      "Please write 10 flirting messages using the example.",
-      "Compose 10 phrases for flirting, following the model provided.",
-      "Kindly make 10 flirting phrases, following the example.",
-      "Write 10 flirt sentences based on the example given."
+    let indexJobENG = 0;
+    
+    const flirtClosingsENG = [
+        "Please make 10 phrases for flirting, following the example.",
+        "Kindly create 10 flirting phrases according to the example.",
+        "Write 10 flirt messages, following the example provided.",
+        "Make 10 flirting phrases, based on the sample.",
+        "Please generate 10 flirt phrases following the given example.",
+        "Create 10 flirting sentences according to the example.",
+        "Write 10 phrases for flirting, using the example as a guide.",
+        "Please compose 10 flirting phrases following the example.",
+        "Make 10 flirt messages based on the provided example.",
+        "Generate 10 phrases for flirting according to the example.",
+        "Create 10 flirt sentences following the given sample.",
+        "Please write 10 flirting messages using the example.",
+        "Compose 10 phrases for flirting, following the model provided.",
+        "Kindly make 10 flirting phrases, following the example.",
+        "Write 10 flirt sentences based on the example given."
     ];
-    let flirtENGIndex = 0;
-    function copyFlirtENG(){
-      navigator.clipboard.writeText(flirtsENG[flirtENGIndex]);
-      alert("Copied Flirt Closing Instruction:\n"+flirtsENG[flirtENGIndex]);
-      flirtENGIndex = (flirtENGIndex + 1) % flirtsENG.length;
-    }
+    let indexFlirtENG = 0;
+    
+    const contactsENG = [
+        "Thank you for completing the test assignment! From now on, our training manager will assist you. Here are their contact details.",
+        "Great job on the test! The next step is connecting with our training manager. Please use the contacts below.",
+        "We appreciate your effort in completing the task. Now you’ll be handed over to our training manager. Here are the details.",
+        "Well done! The test task is finished, and the next person to guide you will be our training manager. Contact information is below.",
+        "Thanks for successfully finishing the test. Moving forward, you’ll be in touch with the manager responsible for training. Here are their contacts.",
+        "The test assignment has been completed. Your next point of contact is our training manager. You can reach them here.",
+        "Excellent work, thank you! From this moment, the training manager will take over. Their contact details are provided below.",
+        "We are grateful for your completed test. Next, you’ll connect with the manager in charge of training. Please find the contacts here.",
+        "Assignment completed — great! Now I’m passing you to our training manager. Here is how you can reach them.",
+        "Thank you for completing the task. The next step is communication with our training manager. Here are their details.",
+        "Well done with the test! The following stage is to get in touch with our training manager. Contact info is listed below.",
+        "We appreciate your work on the assignment. The next phase will be handled by our training manager. Their contacts are here.",
+        "The test is now complete. From here, the training manager will guide you further. Here are their details.",
+        "Thank a you for finishing the test! I’ll now connect you with our training manager, who will assist you next. Here’s the contact information.",
+        "Great result on the task! Now I’m passing you over to the manager responsible for training. Contact details are provided below."
+    ];
+    let indexContactENG = 0;
 
-    // ================== RU ==================
+    // RUSSIAN ARRAYS AND INDEXES
     const greetingsRU = [
-      "Добрый день! Мы компания ChaterLab и хотели бы узнать, есть ли у вас опыт работы в брачных агентствах. Будем рады вашему ответу.",
-      "Здравствуйте! Представляем ChaterLab. Можете ли вы поделиться, работали ли вы ранее в брачных агентствах и какой у вас был опыт?",
-      "Добрый день! Компания ChaterLab интересуется вашим профессиональным опытом в брачных агентствах. Расскажите, пожалуйста, если есть такой опыт.",
-      "Приветствуем! Мы из ChaterLab и хотели бы уточнить: занимались ли вы ранее работой в брачных агентствах?",
-      "Добрый день! ChaterLab ищет специалистов с опытом работы в брачных агентствах. Поделитесь, пожалуйста, вашими достижениями и опытом.",
-      "Здравствуйте! Представляем ChaterLab. Интересно узнать, сталкивались ли вы с работой в брачных агентствах и насколько она вам знакома.",
-      "Добрый день! Мы компания ChaterLab. Был ли у вас опыт работы в брачных агентствах, которым вы могли бы поделиться?",
-      "Приветствуем! ChaterLab хотела бы узнать о вашем опыте работы с брачными агентствами, если такой есть.",
-      "Здравствуйте! Мы из ChaterLab. Можете ли вы рассказать о вашем опыте взаимодействия с брачными агентствами?",
-      "Добрый день! Компания ChaterLab интересуется вашим профессиональным опытом в сфере брачных агентств. Поделитесь, пожалуйста.",
-      "Здравствуйте! ChaterLab ищет людей с опытом работы в брачных агентствах. Поделитесь своим опытом и достижениями, если они есть.",
-      "Приветствуем! Представляем ChaterLab. Есть ли у вас предыдущий опыт работы в брачных агентствах? Будем рады услышать подробности.",
-      "Добрый день! Мы компания ChaterLab и хотели бы узнать, имели ли вы опыт работы в брачных агентствах и чем он был полезен.",
-      "Здравствуйте! ChaterLab интересуется вашим опытом работы с брачными агентствами. Расскажите, пожалуйста, о ваших проектах или обязанностях.",
-      "Добрый день! Представляем ChaterLab. Поделитесь, пожалуйста, вашим опытом работы в брачных агентствах, если он у вас есть."
+        "Добрый день! Мы компания ChaterLab и хотели бы узнать, есть ли у вас опыт работы в брачных агентствах. Будем рады вашему ответу.",
+        "Здравствуйте! Представляем ChaterLab. Можете ли вы поделиться, работали ли вы ранее в брачных агентствах и какой у вас был опыт?",
+        "Добрый день! Компания ChaterLab интересуется вашим профессиональным опытом в брачных агентствах. Расскажите, пожалуйста, если есть такой опыт.",
+        "Приветствуем! Мы из ChaterLab и хотели бы уточнить: занимались ли вы ранее работой в брачных агентствах?",
+        "Добрый день! ChaterLab ищет специалистов с опытом работы в брачных агентствах. Поделитесь, пожалуйста, вашими достижениями и опытом.",
+        "Здравствуйте! Представляем ChaterLab. Интересно узнать, сталкивались ли вы с работой в брачных агентствах и насколько она вам знакома.",
+        "Добрый день! Мы компания ChaterLab. Был ли у вас опыт работы в брачных агентствах, которым вы могли бы поделиться?",
+        "Приветствуем! ChaterLab хотела бы узнать о вашем опыте работы с брачными агентствами, если такой есть.",
+        "Здравствуйте! Мы из ChaterLab. Можете ли вы рассказать о вашем опыте взаимодействия с брачными агентствами?",
+        "Добрый день! Компания ChaterLab интересуется вашим профессиональным опытом в сфере брачных агентств. Поделитесь, пожалуйста.",
+        "Здравствуйте! ChaterLab ищет людей с опытом работы в брачных агентствах. Поделитесь своим опытом и достижениями, если они есть.",
+        "Приветствуем! Представляем ChaterLab. Есть ли у вас предыдущий опыт работы в брачных агентствах? Будем рады услышать подробности.",
+        "Добрый день! Мы компания ChaterLab и хотели бы узнать, имели ли вы опыт работы в брачных агентствах и чем он был полезен.",
+        "Здравствуйте! ChaterLab интересуется вашим опытом работы с брачными агентствами. Расскажите, пожалуйста, о ваших проектах или обязанностях.",
+        "Добрый день! Представляем ChaterLab. Поделитесь, пожалуйста, вашим опытом работы в брачных агентствах, если он у вас есть."
     ];
-    let greetingRUIndex = 0;
-    function copyGreetingRU(){
-      navigator.clipboard.writeText(greetingsRU[greetingRUIndex]);
-      alert("Приветствие скопировано:\n"+greetingsRU[greetingRUIndex]);
-      greetingRUIndex = (greetingRUIndex + 1) % greetingsRU.length;
-    }
+    let indexGreetingRU = 0;
 
     const jobDescriptionsRU = [
-`Описание вакансии:
+        `Описание вакансии:
 📌 Задача: Ведение переписки с иностранными мужчинами от имени девушек. Личные встречи не требуются.
 📌 Тематика: Флирт и знакомства.
 📌 Цель: Получение подарков, организация приезда мужчины и встречи, без участия кандидата.
@@ -401,8 +416,7 @@ Choose your preferred shift.`
 💵 Выплаты: После первой недели, далее 20 числа.
 💵 Ставка: 40% от переписки.
 Какой график вам подходит?`,
-
-`Описание вакансии:
+        `Описание вакансии:
 📌 Основная задача: Переписка с иностранными мужчинами от лица девушек. Оплата за каждое сообщение. Личных встреч нет.
 📌 Тематика общения: Флирт и романтическое общение.
 📌 Цель: Подарки, организация приезда мужчины, встречи без личного участия кандидата.
@@ -412,8 +426,7 @@ Choose your preferred shift.`
 💵 Выплаты: После первой недели и ежемесячно 20 числа.
 💵 Ставка: 40%.
 Выберите удобный график.`,
-
-`Описание вакансии:
+        `Описание вакансии:
 📌 Задача: Ведение переписки с иностранными мужчинами от имени девушек, оплата за каждое сообщение. Кандидат не участвует во встречах.
 📌 Тематика: Знакомства, флирт.
 📌 Цель: Подарки, приезд мужчины и встречи, без личного участия.
@@ -423,8 +436,7 @@ Choose your preferred shift.`
 💵 Выплаты: После первой недели, далее 20 числа.
 💵 Ставка: 40%.
 Какой график вам удобен?`,
-
-`Описание вакансии:
+        `Описание вакансии:
 📌 Основная работа: Переписка от лица девушек с иностранными мужчинами. Оплата за сообщения. Личных встреч нет.
 📌 Тематика: Флирт, знакомства.
 📌 Цель: Подарки, организация приезда мужчины и встречи без участия кандидата.
@@ -433,9 +445,8 @@ Choose your preferred shift.`
 💵 Стажировка: 1-7 дней.
 💵 Выплаты: После первой недели, далее 20 числа.
 💵 Ставка: 40%.
-Выберите удобный график.`,
-
-`Описание вакансии:
+Pick your preferred shift.`,
+        `Описание вакансии:
 📌 Задача: Профессиональная переписка с иностранными мужчинами от имени девушек. Личные встречи не требуются.
 📌 Тематика: Знакомства и флирт.
 📌 Цель: Подарки, контроль приезда мужчины и встреч, без личного участия.
@@ -445,8 +456,7 @@ Choose your preferred shift.`
 💵 Выплаты: После первой недели и 20 числа.
 💵 Ставка: 40%.
 Какой график будет удобен?`,
-
-`Описание вакансии:
+        `Описание вакансии:
 📌 Задача: Ведение переписки от имени девушек с иностранными мужчинами, оплата за каждое сообщение. Встречи не требуются.
 📌 Тематика: Флирт, романтическое общение.
 📌 Цель: Подарки и организация приезда мужчины без участия кандидата.
@@ -456,8 +466,7 @@ Choose your preferred shift.`
 💵 Выплаты: После первой недели и далее 20 числа.
 💵 Ставка: 40%.
 Выберите график.`,
-
-`Описание вакансии:
+        `Описание вакансии:
 📌 Основная задача: Переписка с иностранными мужчинами от имени девушек. Личных встреч нет.
 📌 Тематика: Флирт и знакомства.
 📌 Цель: Подарки, контроль приезда мужчины и встреч, без участия кандидата.
@@ -467,8 +476,7 @@ Choose your preferred shift.`
 💵 Выплаты: После первой недели, далее 20 числа.
 💵 Ставка: 40%.
 Какой график вам подходит?`,
-
-`Описание вакансии:
+        `Описание вакансии:
 📌 Задача: Переписка с иностранными мужчинами от лица девушек, оплата за каждое сообщение. Кандидат не посещает встречи.
 📌 Тематика: Знакомства и флирт.
 📌 Цель: Подарки, организация приезда мужчины и встреч без участия кандидата.
@@ -478,8 +486,7 @@ Choose your preferred shift.`
 💵 Выплаты: После первой недели и 20 числа.
 💵 Ставка: 40%.
 Выберите график.`,
-
-`Описание вакансии:
+        `Описание вакансии:
 📌 Основная работа: Переписка от имени девушек с иностранными мужчинами. Личных встреч нет, оплата за каждое сообщение.
 📌 Тематика: Флирт, романтическое общение.
 📌 Цель: Подарки, приезд мужчины и встречи без участия кандидата.
@@ -489,8 +496,7 @@ Choose your preferred shift.`
 💵 Выплаты: После первой недели и 20 числа.
 💵 Ставка: 40%.
 Какой график удобен?`,
-
-`Описание вакансии:
+        `Описание вакансии:
 📌 Задача: Ведение переписки с иностранными мужчинами от имени девушек, оплата за сообщения. Встречи не требуются.
 📌 Тематика: Знакомства и флирт.
 📌 Цель: Подарки и организация приезда мужчины без участия кандидата.
@@ -500,8 +506,7 @@ Choose your preferred shift.`
 💵 Выплаты: После первой недели и 20 числа.
 💵 Ставка: 40%.
 Выберите график.`,
-
-`Описание вакансии:
+        `Описание вакансии:
 📌 Основная задача: Переписка с иностранными мужчинами от лица девушек. Оплата за каждое сообщение, личные встречи не требуются.
 📌 Тематика: Флирт, знакомства.
 📌 Цель: Подарки, контроль приезда мужчины и встречи без участия кандидата.
@@ -511,8 +516,7 @@ Choose your preferred shift.`
 💵 Выплаты: После первой недели и 20 числа.
 💵 Ставка: 40%.
 Какой график удобен?`,
-
-`Описание вакансии:
+        `Описание вакансии:
 📌 Задача: Переписка с иностранными мужчинами от имени девушек. Личных встреч нет.
 📌 Тематика: Флирт и знакомства.
 📌 Цель: Подарки, организация приезда мужчины без участия кандидата.
@@ -522,8 +526,7 @@ Choose your preferred shift.`
 💵 Выплаты: После первой недели и 20 числа.
 💵 Ставка: 40%.
 Выберите график.`,
-
-`Описание вакансии:
+        `Описание вакансии:
 📌 Основная задача: Ведение переписки с иностранными мужчинами от лица девушек. Личные встречи не требуются.
 📌 Тематика: Флирт и романтическое общение.
 📌 Цель: Подарки, контроль приезда мужчины и встреч без участия кандидата.
@@ -533,8 +536,7 @@ Choose your preferred shift.`
 💵 Выплаты: После первой недели и 20 числа.
 💵 Ставка: 40%.
 Какой график удобен?`,
-
-`Описание вакансии:
+        `Описание вакансии:
 📌 Задача: Переписка от имени девушек с иностранными мужчинами. Личные встречи не требуются, оплата за каждое сообщение.
 📌 Тематика: Флирт и знакомства.
 📌 Цель: Подарки и организация приезда мужчины без участия кандидата.
@@ -544,8 +546,7 @@ Choose your preferred shift.`
 💵 Выплаты: После первой недели и 20 числа.
 💵 Ставка: 40%.
 Выберите график.`,
-
-`Описание вакансии:
+        `Описание вакансии:
 📌 Основная работа: Ведение переписки с иностранными мужчинами от лица девушек, личные встречи не требуются. Оплата за каждое сообщение.
 📌 Тематика: Флирт и знакомства.
 📌 Цель: Подарки, контроль приезда мужчины и встреч без участия кандидата.
@@ -556,37 +557,262 @@ Choose your preferred shift.`
 💵 Ставка: 40%.
 Какой график вам подходит?`
     ];
-    let jobRUIndex = 0;
-    function copyJobRU(){
-      navigator.clipboard.writeText(jobDescriptionsRU[jobRUIndex]);
-      alert("Описание вакансии скопировано:\n"+jobDescriptionsRU[jobRUIndex]);
-      jobRUIndex = (jobRUIndex + 1) % jobDescriptionsRU.length;
+    let indexJobRU = 0;
+    
+    const flirtClosingsRU = [
+        "Пожалуйста, составьте 10 фраз для флирта на основе приведённого примера.",
+        "Составьте 10 флирт-фраз согласно предоставленному образцу.",
+        "Напишите 10 сообщений для флирта, следуя примеру.",
+        "Создайте 10 флирт-фраз по образцу.",
+        "Сгенерируйте 10 фраз для флирта на основе примера.",
+        "Составьте 10 предложений для флирта согласно образцу.",
+        "Подготовьте 10 флирт-фраз, используя пример как руководство.",
+        "Пожалуйста, подготовьте 10 фраз для флирта, следуя примеру.",
+        "Составьте 10 сообщений для флирта по предоставленному образцу.",
+        "Сгенерируйте 10 флирт-фраз согласно предоставленному примеру.",
+        "Создайте 10 предложений для флирта по образцу.",
+        "Пожалуйста, напишите 10 сообщений для флирта, используя пример.",
+        "Составьте 10 фраз для флирта, следуя модели примера.",
+        "Пожалуйста, создайте 10 флирт-фраз, следуя примеру.",
+        "Напишите 10 флирт-предложений на основе предоставленного образца."
+    ];
+    let indexFlirtRU = 0;
+    
+    const contactsRU = [
+        "Благодарим за выполненное тестовое задание! Теперь вас будет сопровождать наш менеджер по обучению. Вот его контакты для связи.",
+        "Отличная работа над тестовым заданием! Далее я передаю вас менеджеру, который отвечает за обучение. Вот его координаты.",
+        "Спасибо за выполнение теста. На следующем шаге с вами свяжется менеджер по обучению. Вот его контакты.",
+        "Тестовое задание успешно завершено. Теперь с вами будет работать наш менеджер, занимающийся обучением. Вот его данные.",
+        "Благодарим вас за качественно выполненное тестовое задание. Дальнейшее взаимодействие будет проходить через менеджера по обучению. Вот его контакты.",
+        "Задание выполнено, спасибо! Теперь я передаю вас нашему менеджеру, который курирует обучение. Вот его данные.",
+        "Спасибо за тестовую работу. Следующий шаг — связь с менеджером, ответственным за обучение. Контакты ниже.",
+        "Благодарим вас за выполнение задания. Дальнейшую работу с вами будет вести менеджер по обучению. Вот его контакты.",
+        "Отлично, тест завершён. Теперь вас встретит наш менеджер по обучению. Вот его данные для связи.",
+        "Задание принято, спасибо! Далее с вами будет работать менеджер, который отвечает за обучение. Вот его контакты.",
+        "Благодарим за проделанную работу. Теперь я передаю вас нашему менеджеру по обучению. Свяжитесь с ним по этим контактам.",
+        "Тестовое задание выполнено успешно. Следующим шагом станет взаимодействие с менеджером по обучению. Вот его контакты.",
+        "Спасибо, вы завершили тест! Теперь передаю вас менеджеру, который займётся вашим обучением. Вот его координаты.",
+        "Благодарим вас за выполненное задание. Дальше с вами будет общаться менеджер, курирующий обучение. Его контакты — ниже.",
+        "Отличный результат! Теперь я передаю вас менеджеру по обучению. Связаться с ним можно по следующим контактам."
+    ];
+    let indexContactRU = 0;
+
+
+    // =========================================================================
+    // 2. ФУНКЦИИ КОПИРОВАНИЯ С ЦИКЛИЧЕСКОЙ ЛОГИКОЙ
+    // =========================================================================
+
+    /**
+     * Универсальная функция для копирования текста из массива с циклом.
+     * @param {Array<string>} array - Массив с текстами.
+     * @param {number} index - Текущий индекс.
+     * @param {string} buttonName - Имя кнопки для оповещения.
+     * @returns {number} Новый индекс.
+     */
+    function copyAndCycle(array, index, buttonName) {
+        const textToCopy = array[index];
+        navigator.clipboard.writeText(textToCopy)
+            .then(() => {
+                const langSuffix = buttonName.includes('(ENG)') ? 'Copied' : 'Скопировано';
+                alert(`${langSuffix} ${buttonName} (Вариант ${index + 1} из ${array.length})`);
+            })
+            .catch(err => {
+                console.error('Could not copy text: ', err);
+                alert('Ошибка копирования текста.');
+            });
+        
+        // Циклическое переключение на следующий индекс
+        return (index + 1) % array.length;
     }
 
-    const flirtsRU = [
-      "Пожалуйста, составьте 10 фраз для флирта на основе приведённого примера.",
-      "Составьте 10 флирт-фраз согласно предоставленному образцу.",
-      "Напишите 10 сообщений для флирта, следуя примеру.",
-      "Создайте 10 флирт-фраз по образцу.",
-      "Сгенерируйте 10 фраз для флирта на основе примера.",
-      "Составьте 10 предложений для флирта согласно образцу.",
-      "Подготовьте 10 флирт-фраз, используя пример как руководство.",
-      "Пожалуйста, подготовьте 10 фраз для флирта, следуя примеру.",
-      "Составьте 10 сообщений для флирта по предоставленному образцу.",
-      "Сгенерируйте 10 флирт-фраз согласно предоставленному примеру.",
-      "Создайте 10 предложений для флирта по образцу.",
-      "Пожалуйста, напишите 10 сообщений для флирта, используя пример.",
-      "Составьте 10 фраз для флирта, следуя модели примера.",
-      "Пожалуйста, создайте 10 флирт-фраз, следуя примеру.",
-      "Напишите 10 флирт-предложений на основе предоставленного образца."
-    ];
-    let flirtRUIndex = 0;
-    function copyFlirtRU(){
-      navigator.clipboard.writeText(flirtsRU[flirtRUIndex]);
-      alert("Инструкция для тестового задания скопирована:\n"+flirtsRU[flirtRUIndex]);
-      flirtRUIndex = (flirtRUIndex + 1) % flirtsRU.length;
+    function copyGreetingENG() {
+        indexGreetingENG = copyAndCycle(greetingsENG, indexGreetingENG, 'Greeting (ENG)');
     }
+    
+    function copyJobENG() {
+        indexJobENG = copyAndCycle(jobDescriptionsENG, indexJobENG, 'Job Description (ENG)');
+    }
+    
+    function copyFlirtENG() {
+        indexFlirtENG = copyAndCycle(flirtClosingsENG, indexFlirtENG, 'Flirt Closing (ENG)');
+    }
+    
+    function copyContactENG() {
+        indexContactENG = copyAndCycle(contactsENG, indexContactENG, 'Contact (ENG)');
+    }
+
+    function copyGreetingRU() {
+        indexGreetingRU = copyAndCycle(greetingsRU, indexGreetingRU, 'Приветствие (RU)');
+    }
+    
+    function copyJobRU() {
+        indexJobRU = copyAndCycle(jobDescriptionsRU, indexJobRU, 'Описание вакансии (RU)');
+    }
+    
+    function copyFlirtRU() {
+        indexFlirtRU = copyAndCycle(flirtClosingsRU, indexFlirtRU, 'Флирт-задание (RU)');
+    }
+    
+    function copyContactRU() {
+        indexContactRU = copyAndCycle(contactsRU, indexContactRU, 'Контакт (RU)');
+    }
+
+
+    // =========================================================================
+    // 3. ФУНКЦИОНАЛ ПЕРЕКЛЮЧЕНИЯ ЯЗЫКА И ИНСТРУКЦИИ
+    // =========================================================================
+    
+    function setLanguage(lang){
+      currentLang = lang;
+      const infoHeader = document.getElementById('infoHeader');
+      const infoText = document.getElementById('infoText');
+      const instructionsDiv = document.getElementById('instructions');
+
+      if(lang === 'ENG'){
+        document.getElementById('btnENG').classList.add('active');
+        document.getElementById('btnRU').classList.remove('active');
+        infoHeader.textContent = "About this tool";
+        infoText.textContent = "This panel allows you to quickly copy professional greetings, job descriptions, test assignments, and contacts for ChaterLab. Click any button to copy the text to your clipboard.";
+
+        instructionsDiv.innerHTML = `
+          <h3>📖 Instruction</h3>
+
+          <div class="step">
+            <h4>1️⃣ Candidate Greeting</h4>
+            <ul>
+              <li>Russian audience → <b>Приветствие (RU)</b></li>
+              <li>English audience → <b>Greeting (ENG)</b></li>
+            </ul>
+          </div>
+
+          <div class="step">
+            <h4>2️⃣ Job Description</h4>
+            <ul>
+              <li>Russian audience → <b>Описание вакансии (RU)</b></li>
+              <li>English audience → <b>Job Description (ENG)</b></li>
+            </ul>
+            <table>
+              <tr><th>Location</th><th>Experience</th><th>Schedule</th><th>Button</th></tr>
+              <tr><td>Kazakhstan</td><td>Basic / No experience</td><td>08:00–16:00, 16:00–00:00, 00:00–08:00</td><td>Job Description (ENG)</td></tr>
+              <tr><td>Kazakhstan</td><td>Prime experience</td><td>14:00–22:00, 22:00–06:00</td><td>Job Description. With Prime experience (ENG)</td></tr>
+            </table>
+          </div>
+
+          <div class="step">
+            <h4>3️⃣ Test Assignment</h4>
+            <ul>
+              <li>Russian audience → <b>Флирт-задание (RU)</b></li>
+              <li>English audience → <b>Flirt Closing (ENG)</b></li>
+            </ul>
+          </div>
+
+          <div class="step">
+            <h4>4️⃣ Handling Applications & Documentation</h4>
+            <ol>
+              <li>All applications are logged in the <b>LEADS</b> sheet.</li>
+              <li>After completing the test and choosing a schedule → provide the manager contact.</li>
+              <li>Send in the work Telegram group:
+                <ul>
+                  <li>Screenshot of the completed test</li>
+                  <li>Below it: candidate contacts, schedule, assigned manager</li>
+                </ul>
+              </li>
+              <li>Documentation in Google Sheets:
+                <ul>
+                  <li>Philippines → <b>Chathouse Philippines</b></li>
+                  <li>Kazakhstan → <b>Chathouse</b></li>
+                  <li>Tab: <b>Interns</b></li>
+                  <li>Fill: Date, Candidate contact, Schedule, Manager</li>
+                  <li>Status → "assigned to admin"</li>
+                </ul>
+              </li>
+            </ol>
+          </div>
+
+          <div class="step">
+            <h4>5️⃣ Manager Contacts</h4>
+            <table>
+              <tr><th>Location</th><th>Contacts</th></tr>
+              <tr><td>Philippines</td><td>Telegram: @strighik / WhatsApp: +380990650264<br>Telegram: @jszmn1827 / WhatsApp: +639260025915</td></tr>
+              <tr><td>Kazakhstan (Prime)</td><td>Telegram: @kruzhkov</td></tr>
+            </table>
+          </div>
+        `;
+      } else {
+        document.getElementById('btnENG').classList.remove('active');
+        document.getElementById('btnRU').classList.add('active');
+        infoHeader.textContent = "О панели";
+        infoText.textContent = "Эта панель позволяет быстро копировать профессиональные приветствия, описание вакансии, тестовое задание и контакты для ChaterLab. Нажмите любую кнопку, чтобы скопировать текст в буфер обмена.";
+
+        instructionsDiv.innerHTML = `
+          <h3>📖 Инструкция для работы</h3>
+
+          <div class="step">
+            <h4>1️⃣ Приветствие кандидата</h4>
+            <ul>
+              <li>Русскоязычная аудитория → <b>Приветствие (RU)</b></li>
+              <li>Англоязычная аудитория → <b>Greeting (ENG)</b></li>
+            </ul>
+          </div>
+
+          <div class="step">
+            <h4>2️⃣ Описание вакансии</h4>
+            <ul>
+              <li>Русскоязычная аудитория → <b>Описание вакансии (RU)</b></li>
+              <li>Англоязычная аудитория → <b>Job Description (ENG)</b></li>
+            </ul>
+            <table>
+              <tr><th>Локация</th><th>Опыт</th><th>График</th><th>Кнопка</th></tr>
+              <tr><td>Казахстан</td><td>Без опыта / базовый</td><td>08:00–16:00, 16:00–00:00, 00:00–08:00</td><td>Описание вакансии (RU)</td></tr>
+              <tr><td>Казахстан</td><td>Опыт Прайма</td><td>14:00–22:00, 22:00–06:00</td><td>Описание вакансии. С опытом Прайма (RU)</td></tr>
+            </table>
+          </div>
+
+          <div class="step">
+            <h4>3️⃣ Тестовое задание</h4>
+            <ul>
+              <li>Русскоязычная аудитория → <b>Флирт-задание (RU)</b></li>
+              <li>Англоязычная аудитория → <b>Flirt Closing (ENG)</b></li>
+            </ul>
+          </div>
+
+          <div class="step">
+            <h4>4️⃣ Работа с заявками и документацией</h4>
+            <ol>
+              <li>Все заявки фиксируются в таблице <b>ЛИДЫ</b>.</li>
+              <li>После выполнения теста и выбора графика → выдаём контакт менеджера.</li>
+              <li>Отправляем в рабочую Telegram-группу:
+                <ul>
+                  <li>Скрин выполненного теста</li>
+                  <li>Подпись: контакты кандидата, график, контакт менеджера</li>
+                </ul>
+              </li>
+              <li>Документация в Google Sheets:
+                <ul>
+                  <li>Филиппины → <b>Chathouse Philippines</b></li>
+                  <li>Казахстан → <b>Chathouse</b></li>
+                  <li>Вкладка: <b>Стажёры</b></li>
+                  <li>Заполняем: Дата, Контакт, График, Менеджер</li>
+                  <li>Статус → «передан админу»</li>
+                </ul>
+              </li>
+            </ol>
+          </div>
+
+          <div class="step">
+            <h4>5️⃣ Контакты менеджеров</h4>
+            <table>
+              <tr><th>Локация</th><th>Контакты</th></tr>
+              <tr><td>Филиппины</td><td>Telegram: @strighik / WhatsApp: +380990650264<br>Telegram: @jszmn1827 / WhatsApp: +639260025915</td></tr>
+              <tr><td>Казахстан (опыт Прайма)</td><td>Telegram: @kruzhkov</td></tr>
+            </table>
+          </div>
+        `;
+      }
+    }
+
+    // Initialize instructions
+    setLanguage(currentLang);
   </script>
 </body>
 </html>
-
