@@ -87,6 +87,23 @@
       color: #fff;
       border-color: #007aff;
     }
+    /* Toast styles */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #007aff;
+      color: #fff;
+      padding: 10px 15px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      z-index: 9999;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .toast.show {
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
@@ -124,6 +141,15 @@ function copyTextToClipboard(text) {
   document.body.removeChild(textarea);
 }
 
+function showToast(message) {
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.classList.add('show'), 10);
+  setTimeout(() => document.body.removeChild(toast), 1600);
+}
+
 // ------------------ ENG ------------------
 const greetingsENG = [
 "Good day! We are ChaterLab. Do you have experience working in marriage agencies?",
@@ -145,8 +171,8 @@ const greetingsENG = [
 let greetingENGIndex = 0;
 function copyGreetingENG(){
   copyTextToClipboard(greetingsENG[greetingENGIndex]);
+  showToast('Greeting copied!');
   greetingENGIndex = (greetingENGIndex + 1) % greetingsENG.length;
-  alert("Copied Greeting:\n"+greetingsENG[greetingENGIndex]);
 }
 
 const jobDescriptionsENG = [
@@ -164,8 +190,8 @@ Which shift suits you best?`
 let jobENGIndex = 0;
 function copyJobENG(){
   copyTextToClipboard(jobDescriptionsENG[jobENGIndex]);
+  showToast('Job Description copied!');
   jobENGIndex = (jobENGIndex + 1) % jobDescriptionsENG.length;
-  alert("Copied Job Description:\n"+jobDescriptionsENG[jobENGIndex]);
 }
 
 const flirtsENG = [
@@ -188,8 +214,8 @@ const flirtsENG = [
 let flirtENGIndex = 0;
 function copyFlirtENG(){
   copyTextToClipboard(flirtsENG[flirtENGIndex]);
+  showToast('Flirt Closing copied!');
   flirtENGIndex = (flirtENGIndex + 1) % flirtsENG.length;
-  alert("Copied Flirt Closing Instruction:\n"+flirtsENG[flirtENGIndex]);
 }
 
 // ------------------ RU ------------------
@@ -205,55 +231,4 @@ const greetingsRU = [
 "Добрый день! Мы из ChaterLab. Обладаете ли вы опытом работы в брачных агентствах?",
 "Добрый день! Компания ChaterLab интересуется, есть ли у вас профессиональный опыт работы в брачных агентствах?",
 "Добрый день! ChaterLab запрашивает сведения о вашем опыте работы в брачных агентствах.",
-"Добрый день! Представляем ChaterLab. Есть ли у вас предыдущий опыт работы в брачных агентствах?",
-"Добрый день! Мы компания ChaterLab. Работали ли вы с брачными агентствами ранее?",
-"Добрый день! ChaterLab интересуется, имеется ли у вас опыт работы с брачными агентствами?",
-"Добрый день! Компания ChaterLab запрашивает информацию о вашем опыте работы в брачных агентствах."
-];
-let greetingRUIndex = 0;
-function copyGreetingRU(){
-  copyTextToClipboard(greetingsRU[greetingRUIndex]);
-  greetingRUIndex = (greetingRUIndex + 1) % greetingsRU.length;
-  alert("Приветствие скопировано:\n"+greetingsRU[greetingRUIndex]);
-}
-
-const jobDescriptionsRU = [
-`Описание вакансии:
-📌 Задача: Общаться от имени девушек с иностранными мужчинами через чат и письма. Каждое исходящее сообщение оплачивается.
-📌 Тема: Флирт и знакомства.
-📌 Цель: Подарки, приезд мужчины в город девушки и встречи.
-📌 Требования: Высокоскоростной интернет и ноутбук.
-📌 График работы: 06-14, 14-22, 22-06, 6 дней в неделю, 1 выходной (Kyiv time)
-💵 Оплачиваемая стажировка: 1-7 дней.
-💵 Выплата: после первой недели, далее 20 числа.
-💵 Ставка: 40% от баланса переписки.
-Какой график вам наиболее удобен?`
-];
-let jobRUIndex = 0;
-function copyJobRU(){
-  copyTextToClipboard(jobDescriptionsRU[jobRUIndex]);
-  jobRUIndex = (jobRUIndex + 1) % jobDescriptionsRU.length;
-  alert("Описание вакансии скопировано:\n"+jobDescriptionsRU[jobRUIndex]);
-}
-
-const flirtsRU = [
-"Пожалуйста, составьте 10 фраз для флирта на основе приведённого примера.",
-"Составьте 10 флирт-фраз согласно предоставленному образцу.",
-"Напишите 10 сообщений для флирта, следуя примеру.",
-"Создайте 10 флирт-фраз по образцу.",
-"Сгенерируйте 10 фраз для флирта на основе примера.",
-"Составьте 10 предложений для флирта согласно образцу.",
-"Подготовьте 10 флирт-фраз, используя пример как руководство.",
-"Пожалуйста, подготовьте 10 фраз для флирта, следуя примеру.",
-"Составьте 10 сообщений для флирта по предоставленному образцу.",
-"Сгенерируйте 10 флирт-фраз согласно предоставленному примеру.",
-"Создайте 10 предложений для флирта по образцу.",
-"Пожалуйста, напишите 10 сообщений для флирта, используя пример.",
-"Составьте 10 фраз для флирта, следуя модели примера.",
-"Пожалуйста, создайте 10 флирт-фраз, следуя примеру.",
-"Напишите 10 флирт-предложений на основе предоставленного образца."
-];
-let flirtRUIndex = 0;
-function copyFlirtRU(){
-  copyTextToClipboard(flirtsRU[flirtRUIndex]);
-  flirtRUIndex = (flirtRUIndex +
+"Добрый день! Представляем ChaterLab. Есть ли у вас предыдущий опыт работы в
