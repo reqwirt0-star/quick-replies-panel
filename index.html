@@ -35,11 +35,17 @@
       padding: 30px;
       border-right: 1px solid #f0f0f0;
       background-color: #fff;
+      /* Добавлено для лучшей адаптивности на мобильных */
+      box-sizing: border-box; 
     }
     .sidebar h2 {
       font-size: 18px;
       margin-bottom: 10px;
       font-weight: 600;
+      margin-top: 25px;
+    }
+    .sidebar h2:first-of-type {
+        margin-top: 0;
     }
     .sidebar button {
       display: block;
@@ -54,6 +60,8 @@
       color: #fff;
       cursor: pointer;
       transition: all 0.2s ease;
+      /* Увеличение зоны клика для мобильных */
+      min-height: 48px;
     }
     .sidebar button:hover {
       background-color: #005ecb;
@@ -102,6 +110,8 @@
       padding: 20px;
       margin-bottom: 20px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      /* КЛЮЧЕВОЕ ИЗМЕНЕНИЕ: Для прокрутки таблиц на мобильном */
+      overflow-x: auto; 
     }
     .step h4 {
       margin: 0 0 10px;
@@ -116,6 +126,7 @@
       width: 100%;
       border-collapse: collapse;
       margin-top: 10px;
+      min-width: 600px; /* Чтобы таблица была явно шире экрана на мобильном, если много столбцов */
     }
     table th, table td {
       border: 1px solid #e5e5e5;
@@ -126,14 +137,25 @@
       background: #f0f4ff;
       text-align: left;
     }
+    
+    /* ===== АДАПТИВНЫЕ СТИЛИ ДЛЯ МОБИЛЬНЫХ (max-width: 768px) ===== */
     @media (max-width: 768px) {
+      header {
+        font-size: 24px;
+        padding: 15px;
+      }
       main {
-        flex-direction: column;
+        flex-direction: column; /* Боковая панель и инфо-блок встают друг под друга */
       }
       .sidebar {
         width: 100%;
+        min-width: unset;
+        padding: 20px; /* Меньше отступов для экономии места */
         border-right: none;
         border-bottom: 1px solid #f0f0f0;
+      }
+      .info {
+        padding: 20px; /* Меньше отступов для экономии места */
       }
     }
   </style>
@@ -171,7 +193,6 @@
 
     // =========================================================================
     // 1. АРХИВЫ С ТЕКСТАМИ И ИНДЕКСАМИ ДЛЯ ЦИКЛИЧЕСКОГО ПЕРЕКЛЮЧЕНИЯ
-    // (Массивы оставлены без изменений, как в предыдущем варианте)
     // =========================================================================
 
     // ENGLISH ARRAYS AND INDEXES
@@ -600,17 +621,12 @@ Pick your preferred shift.`,
 
 
     // =========================================================================
-    // 2. ФУНКЦИИ КОПИРОВАНИЯ С ИСПРАВЛЕННОЙ ЛОГИКОЙ И FALLBACK
+    // 2. ФУНКЦИИ КОПИРОВАНИЯ С ИСПРАВЛЕННОЙ ЛОГИКОЙ И FALLBACK (Без изменений)
     // =========================================================================
 
-    /**
-     * Вспомогательная функция для копирования с использованием устаревшего document.execCommand.
-     * Создает временный textarea, копирует текст и удаляет его.
-     */
     function fallbackCopyTextToClipboard(text) {
       const textArea = document.createElement("textarea");
       textArea.value = text;
-      // Делаем элемент невидимым, но доступным для копирования
       textArea.style.position = "fixed"; 
       textArea.style.opacity = "0";
 
@@ -621,7 +637,7 @@ Pick your preferred shift.`,
       try {
         const successful = document.execCommand('copy');
         document.body.removeChild(textArea);
-        return successful; // true or false
+        return successful;
       } catch (err) {
         console.error('Fallback: Ошибка копирования через execCommand', err);
         document.body.removeChild(textArea);
@@ -629,21 +645,11 @@ Pick your preferred shift.`,
       }
     }
 
-
-    /**
-     * Универсальная функция для копирования текста из массива с циклом.
-     * Использует современный API с резервом на execCommand.
-     * @param {Array<string>} array - Массив с текстами.
-     * @param {number} index - Текущий индекс.
-     * @param {string} buttonName - Имя кнопки для оповещения.
-     * @returns {number} Новый индекс.
-     */
     function copyAndCycle(array, index, buttonName) {
         const textToCopy = array[index];
         const langSuffix = buttonName.includes('(ENG)') ? 'Copied' : 'Скопировано';
         const successMessage = `${langSuffix} ${buttonName} (Вариант ${index + 1} из ${array.length})`;
 
-        // 1. Попытка использовать современный (асинхронный) Clipboard API
         if (navigator.clipboard) {
             navigator.clipboard.writeText(textToCopy)
                 .then(() => {
@@ -651,16 +657,13 @@ Pick your preferred shift.`,
                 })
                 .catch(err => {
                     console.warn('Clipboard API (async) failed, trying fallback:', err);
-                    // 2. Резерв: Если современный API не сработал (из-за разрешений), пробуем execCommand
                     if (fallbackCopyTextToClipboard(textToCopy)) {
                         alert(successMessage);
                     } else {
-                        // Если и резерв не сработал
                         alert('Ошибка копирования текста. Пожалуйста, попробуйте еще раз.');
                     }
                 });
         } else {
-            // 3. Прямое использование резерва, если современный API не поддерживается
             if (fallbackCopyTextToClipboard(textToCopy)) {
                 alert(successMessage);
             } else {
@@ -668,7 +671,6 @@ Pick your preferred shift.`,
             }
         }
 
-        // Циклическое переключение на следующий индекс
         return (index + 1) % array.length;
     }
 
@@ -707,7 +709,6 @@ Pick your preferred shift.`,
 
     // =========================================================================
     // 3. ФУНКЦИОНАЛ ПЕРЕКЛЮЧЕНИЯ ЯЗЫКА И ИНСТРУКЦИИ
-    // (Оставлен без изменений)
     // =========================================================================
     
     function setLanguage(lang){
