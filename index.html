@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ChaterLab Quick Replies</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght400;600&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
@@ -35,7 +35,6 @@
       padding: 30px;
       border-right: 1px solid #f0f0f0;
       background-color: #fff;
-      /* Добавлено для лучшей адаптивности на мобильных */
       box-sizing: border-box; 
     }
     .sidebar h2 {
@@ -60,7 +59,6 @@
       color: #fff;
       cursor: pointer;
       transition: all 0.2s ease;
-      /* Увеличение зоны клика для мобильных */
       min-height: 48px;
     }
     .sidebar button:hover {
@@ -110,7 +108,6 @@
       padding: 20px;
       margin-bottom: 20px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-      /* КЛЮЧЕВОЕ ИЗМЕНЕНИЕ: Для прокрутки таблиц на мобильном */
       overflow-x: auto; 
     }
     .step h4 {
@@ -126,7 +123,7 @@
       width: 100%;
       border-collapse: collapse;
       margin-top: 10px;
-      min-width: 600px; /* Чтобы таблица была явно шире экрана на мобильном, если много столбцов */
+      min-width: 600px; 
     }
     table th, table td {
       border: 1px solid #e5e5e5;
@@ -137,7 +134,54 @@
       background: #f0f4ff;
       text-align: left;
     }
+
+    /* ===== НОВЫЙ МОБИЛЬНЫЙ ПЕРЕКЛЮЧАТЕЛЬ (Mobile Switcher) ===== */
+    .mobile-switcher {
+      display: none; 
+      background-color: #fff;
+      border-bottom: 1px solid #e5e5e5;
+      padding: 10px 10px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .mobile-switcher button {
+      width: 49%;
+      padding: 10px 0;
+      border: 1px solid #e5e5e5;
+      border-radius: 8px;
+      background-color: #fff;
+      font-size: 15px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .mobile-switcher button.active {
+      background-color: #007aff;
+      color: #fff;
+      border-color: #007aff;
+    }
     
+    /* ===== ТОСТ-УВЕДОМЛЕНИЕ (Toast Notification) - КРЕАТИВНОЕ УЛУЧШЕНИЕ UX ===== */
+    .toast-notification {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(0, 0, 0, 0.7); /* Тёмный полупрозрачный фон */
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+      z-index: 1000;
+      font-size: 14px;
+      pointer-events: none; /* Позволяет кликам проходить насквозь, когда скрыто */
+      white-space: nowrap; /* Чтобы не переносило текст на мобильном */
+    }
+    .toast-notification.show {
+        opacity: 1;
+    }
+
     /* ===== АДАПТИВНЫЕ СТИЛИ ДЛЯ МОБИЛЬНЫХ (max-width: 768px) ===== */
     @media (max-width: 768px) {
       header {
@@ -145,25 +189,39 @@
         padding: 15px;
       }
       main {
-        flex-direction: column; /* Боковая панель и инфо-блок встают друг под друга */
+        flex-direction: column; 
+      }
+      .mobile-switcher {
+        display: flex; 
+        justify-content: space-between;
       }
       .sidebar {
         width: 100%;
         min-width: unset;
-        padding: 20px; /* Меньше отступов для экономии места */
+        padding: 20px; 
         border-right: none;
         border-bottom: 1px solid #f0f0f0;
       }
       .info {
-        padding: 20px; /* Меньше отступов для экономии места */
+        padding: 20px; 
+      }
+      /* На мобильных, info скрыт по умолчанию, пока не активирован переключателем */
+      .info {
+        display: none;
       }
     }
   </style>
 </head>
 <body>
   <header>ChaterLab Quick Replies</header>
+  
+  <div class="mobile-switcher" id="mobileSwitcher">
+    <button id="switchButtons" class="active" onclick="toggleMobileView('buttons')">Быстрые Ответы</button>
+    <button id="switchInstructions" onclick="toggleMobileView('instructions')">Инструкция</button>
+  </div>
+
   <main>
-    <div class="sidebar">
+    <div class="sidebar" id="sidebarBlock">
       <h2>English</h2>
       <button onclick="copyGreetingENG()">Greeting (ENG)</button>
       <button onclick="copyJobENG()">Job Description (ENG)</button>
@@ -177,7 +235,7 @@
       <button onclick="copyContactRU()">Контакт (RU)</button>
     </div>
 
-    <div class="info">
+    <div class="info" id="infoBlock">
       <div class="toggle">
         <button id="btnENG" class="active" onclick="setLanguage('ENG')">ENG</button>
         <button id="btnRU" onclick="setLanguage('RU')">RU</button>
@@ -188,11 +246,15 @@
         </div>
     </div>
   </main>
+
+  <div id="toast" class="toast-notification"></div>
+
   <script>
     let currentLang = 'ENG';
 
     // =========================================================================
     // 1. АРХИВЫ С ТЕКСТАМИ И ИНДЕКСАМИ ДЛЯ ЦИКЛИЧЕСКОГО ПЕРЕКЛЮЧЕНИЯ
+    // (Полный код массивов - сохранен без изменений)
     // =========================================================================
 
     // ENGLISH ARRAYS AND INDEXES
@@ -621,8 +683,27 @@ Pick your preferred shift.`,
 
 
     // =========================================================================
-    // 2. ФУНКЦИИ КОПИРОВАНИЯ С ИСПРАВЛЕННОЙ ЛОГИКОЙ И FALLBACK (Без изменений)
+    // 2. ФУНКЦИИ КОПИРОВАНИЯ С ТОСТ-УВЕДОМЛЕНИЕМ И ВИБРАЦИЕЙ
     // =========================================================================
+
+    /**
+     * Показывает неблокирующее тост-уведомление и запускает вибрацию (если доступно).
+     * @param {string} message - Текст для отображения.
+     */
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.classList.add('show');
+        
+        // Добавляем тактильную обратную связь (короткая вибрация)
+        if (navigator.vibrate) {
+            navigator.vibrate(50); 
+        }
+
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 2000); // Скрыть через 2 секунды
+    }
 
     function fallbackCopyTextToClipboard(text) {
       const textArea = document.createElement("textarea");
@@ -649,25 +730,26 @@ Pick your preferred shift.`,
         const textToCopy = array[index];
         const langSuffix = buttonName.includes('(ENG)') ? 'Copied' : 'Скопировано';
         const successMessage = `${langSuffix} ${buttonName} (Вариант ${index + 1} из ${array.length})`;
+        let success = false;
 
         if (navigator.clipboard) {
             navigator.clipboard.writeText(textToCopy)
                 .then(() => {
-                    alert(successMessage);
+                    showToast(successMessage);
                 })
                 .catch(err => {
                     console.warn('Clipboard API (async) failed, trying fallback:', err);
                     if (fallbackCopyTextToClipboard(textToCopy)) {
-                        alert(successMessage);
+                        showToast(successMessage);
                     } else {
-                        alert('Ошибка копирования текста. Пожалуйста, попробуйте еще раз.');
+                        showToast('Ошибка копирования. Попробуйте снова.');
                     }
                 });
         } else {
             if (fallbackCopyTextToClipboard(textToCopy)) {
-                alert(successMessage);
+                showToast(successMessage);
             } else {
-                alert('Ошибка копирования текста. Пожалуйста, попробуйте еще раз.');
+                showToast('Ошибка копирования. Попробуйте снова.');
             }
         }
 
@@ -708,7 +790,7 @@ Pick your preferred shift.`,
 
 
     // =========================================================================
-    // 3. ФУНКЦИОНАЛ ПЕРЕКЛЮЧЕНИЯ ЯЗЫКА И ИНСТРУКЦИИ
+    // 3. ФУНКЦИОНАЛ ПЕРЕКЛЮЧЕНИЯ ЯЗЫКА И МОБИЛЬНОГО ВИДА
     // =========================================================================
     
     function setLanguage(lang){
@@ -859,9 +941,52 @@ Pick your preferred shift.`,
         `;
       }
     }
+    
+    /**
+     * Скрывает один блок и показывает другой на мобильном.
+     */
+    function toggleMobileView(view) {
+        const sidebar = document.getElementById('sidebarBlock');
+        const info = document.getElementById('infoBlock');
+        const btnButtons = document.getElementById('switchButtons');
+        const btnInstructions = document.getElementById('switchInstructions');
+        
+        const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
-    // Initialize instructions
-    setLanguage(currentLang);
+        if (!isMobile) {
+            // На десктопе всегда показываем оба блока
+            sidebar.style.display = 'block'; 
+            info.style.display = 'block'; 
+            return;
+        }
+
+        if (view === 'buttons') {
+            sidebar.style.display = 'block';
+            info.style.display = 'none';
+            btnButtons.classList.add('active');
+            btnInstructions.classList.remove('active');
+        } else if (view === 'instructions') {
+            sidebar.style.display = 'none';
+            info.style.display = 'block';
+            btnButtons.classList.remove('active');
+            btnInstructions.classList.add('active');
+        }
+    }
+
+    // Инициализация при загрузке страницы
+    window.addEventListener('load', () => {
+        setLanguage(currentLang); 
+        // При загрузке на мобильном показываем блок кнопок по умолчанию
+        toggleMobileView('buttons');
+    });
+
+    // Инициализация при изменении размера (для десктопа/планшета)
+    window.addEventListener('resize', () => {
+        // При изменении размера проверяем, не перешли ли мы на десктоп
+        if (!window.matchMedia("(max-width: 768px)").matches) {
+            toggleMobileView('buttons'); // Принудительно показываем оба блока
+        }
+    });
   </script>
 </body>
 </html>
