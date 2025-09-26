@@ -9,7 +9,7 @@
     body {
       margin: 0;
       font-family: 'Inter', system-ui, sans-serif;
-      background-color: #fff;
+      background-color: #f5f5f7;
       color: #111;
       display: flex;
       flex-direction: column;
@@ -22,15 +22,17 @@
       font-weight: 600;
       border-bottom: 1px solid #e5e5e5;
       letter-spacing: -0.5px;
+      background-color: #fff;
     }
     main {
       display: flex;
       flex: 1;
     }
     .sidebar {
-      flex: 1;
+      width: 300px;
       padding: 30px;
       border-right: 1px solid #f0f0f0;
+      background-color: #fff;
     }
     .sidebar h2 {
       font-size: 18px;
@@ -42,22 +44,22 @@
       width: 100%;
       padding: 12px 16px;
       margin-bottom: 12px;
-      background-color: #f9f9f9;
-      border: 1px solid #e0e0e0;
+      background-color: #007aff;
+      border: none;
       border-radius: 10px;
       font-size: 15px;
       text-align: left;
+      color: #fff;
       cursor: pointer;
       transition: all 0.2s ease;
     }
     .sidebar button:hover {
-      background-color: #f0f0f0;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      background-color: #005ecb;
     }
     .info {
       flex: 1;
       padding: 30px;
-      background-color: #fafafa;
+      background-color: #fefefe;
     }
     .info h3 {
       font-size: 20px;
@@ -87,23 +89,6 @@
       color: #fff;
       border-color: #007aff;
     }
-    /* Toast styles */
-    .toast {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #007aff;
-      color: #fff;
-      padding: 10px 15px;
-      border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      z-index: 9999;
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    .toast.show {
-      opacity: 1;
-    }
   </style>
 </head>
 <body>
@@ -131,104 +116,476 @@
     </div>
   </main>
 
-<script>
-function copyTextToClipboard(text) {
-  const textarea = document.createElement('textarea');
-  textarea.value = text;
-  document.body.appendChild(textarea);
-  textarea.select();
-  document.execCommand('copy');
-  document.body.removeChild(textarea);
-}
+  <script>
+    let currentLang = 'ENG';
+    function setLanguage(lang){
+      currentLang = lang;
+      const infoText = document.getElementById('infoText');
+      if(lang === 'ENG'){
+        document.getElementById('btnENG').classList.add('active');
+        document.getElementById('btnRU').classList.remove('active');
+        infoText.textContent = "This panel allows you to quickly copy professional greetings, job descriptions, and test assignment instructions for ChaterLab. Each click will copy the text to your clipboard and cycle through alternative versions to avoid spam bans.";
+      } else {
+        document.getElementById('btnENG').classList.remove('active');
+        document.getElementById('btnRU').classList.add('active');
+        infoText.textContent = "Эта панель позволяет быстро копировать профессиональные приветствия, описание вакансии и инструкции для тестового задания для ChaterLab. Каждый клик будет копировать текст в буфер обмена и показывать альтернативные варианты текста для во избежание блокировки за спам.";
+      }
+    }
 
-function showToast(message) {
-  const toast = document.createElement('div');
-  toast.className = 'toast';
-  toast.textContent = message;
-  document.body.appendChild(toast);
-  setTimeout(() => toast.classList.add('show'), 10);
-  setTimeout(() => document.body.removeChild(toast), 1600);
-}
+    // ================== ENG ==================
+    const greetingsENG = [
+      "Good day! We are ChaterLab. Do you have experience working in marriage agencies?",
+      "Good day! This is ChaterLab. Have you ever worked in marriage agencies?",
+      "Good day! ChaterLab would like to know if you have experience in marriage agencies?",
+      "Good day! Representing ChaterLab. Have you previously worked in marriage agencies?",
+      "Good day! We are ChaterLab. Are you experienced in marriage agencies?",
+      "Good day! This is ChaterLab. Have you been involved with marriage agencies before?",
+      "Good day! ChaterLab is interested in your experience with marriage agencies.",
+      "Good day! We represent ChaterLab. Have you ever worked in marriage agencies?",
+      "Good day! ChaterLab asks if you have prior experience in marriage agencies.",
+      "Good day! We are ChaterLab. Have you worked with marriage agencies before?",
+      "Good day! Representing ChaterLab. Do you have any experience in marriage agencies?",
+      "Good day! ChaterLab would like to know about your experience in marriage agencies.",
+      "Good day! We are ChaterLab. Have you got experience in marriage agencies?",
+      "Good day! This is ChaterLab. Have you worked in marriage agencies previously?",
+      "Good day! ChaterLab asks if you have experience working in marriage agencies."
+    ];
+    let greetingENGIndex = 0;
+    function copyGreetingENG(){
+      navigator.clipboard.writeText(greetingsENG[greetingENGIndex]);
+      alert("Copied Greeting:\n"+greetingsENG[greetingENGIndex]);
+      greetingENGIndex = (greetingENGIndex + 1) % greetingsENG.length;
+    }
 
-// ------------------ ENG ------------------
-const greetingsENG = [
-"Good day! We are ChaterLab. Do you have experience working in marriage agencies?",
-"Good day! This is ChaterLab. Have you ever worked in marriage agencies?",
-"Good day! ChaterLab would like to know if you have experience in marriage agencies?",
-"Good day! Representing ChaterLab. Have you previously worked in marriage agencies?",
-"Good day! We are ChaterLab. Are you experienced in marriage agencies?",
-"Good day! This is ChaterLab. Have you been involved with marriage agencies before?",
-"Good day! ChaterLab is interested in your experience with marriage agencies.",
-"Good day! We represent ChaterLab. Have you ever worked in marriage agencies?",
-"Good day! ChaterLab asks if you have prior experience in marriage agencies.",
-"Good day! We are ChaterLab. Have you worked with marriage agencies before?",
-"Good day! Representing ChaterLab. Do you have any experience in marriage agencies?",
-"Good day! ChaterLab would like to know about your experience in marriage agencies.",
-"Good day! We are ChaterLab. Have you got experience in marriage agencies?",
-"Good day! This is ChaterLab. Have you worked in marriage agencies previously?",
-"Good day! ChaterLab asks if you have experience working in marriage agencies."
-];
-let greetingENGIndex = 0;
-function copyGreetingENG(){
-  copyTextToClipboard(greetingsENG[greetingENGIndex]);
-  showToast('Greeting copied!');
-  greetingENGIndex = (greetingENGIndex + 1) % greetingsENG.length;
-}
-
-const jobDescriptionsENG = [
+    const jobDescriptionsENG = [
 `Job Description:
-📌 Task: Communicate on behalf of girls with foreign men via chat and letters. Each outgoing message from a man is paid.
+📌 Task: Communicate with foreign men on behalf of girls. All interaction is via chat and letters, no in-person meetings required.
 📌 Topic: Flirting and dating.
-📌 Goal: Gifts, the man's arrival in the girl's city, and meetings.
-📌 Requirements: High-speed internet and a laptop.
-📌 Schedule: 06-14, 14-22, 22-06, 6 days a week, 1 day off.
+📌 Goal: Gifts, organizing the man's visit, and meetings—without personal involvement.
+📌 Requirements: Laptop and high-speed internet.
+📌 Schedule: 6:00 AM - 2:00 PM, 2:00 PM - 10:00 PM, 10:00 PM - 6:00 AM, 6 days/week, 1 day off (Philippines time)
 💵 Paid internship: 1-7 days.
 💵 Payment: After first week, then on the 20th of each month.
 💵 Rate: 40% of correspondence balance.
-Which shift suits you best?`
-];
-let jobENGIndex = 0;
-function copyJobENG(){
-  copyTextToClipboard(jobDescriptionsENG[jobENGIndex]);
-  showToast('Job Description copied!');
-  jobENGIndex = (jobENGIndex + 1) % jobDescriptionsENG.length;
-}
+Which shift suits you?`,
 
-const flirtsENG = [
-"Please make 10 phrases for flirting, following the example.",
-"Kindly create 10 flirting phrases according to the example.",
-"Write 10 flirt messages, following the example provided.",
-"Make 10 flirting phrases, based on the sample.",
-"Please generate 10 flirt phrases following the given example.",
-"Create 10 flirting sentences according to the example.",
-"Write 10 phrases for flirting, using the example as a guide.",
-"Please compose 10 flirting phrases following the example.",
-"Make 10 flirt messages based on the provided example.",
-"Generate 10 phrases for flirting according to the example.",
-"Create 10 flirt sentences following the given sample.",
-"Please write 10 flirting messages using the example.",
-"Compose 10 phrases for flirting, following the model provided.",
-"Kindly make 10 flirting phrases, following the example.",
-"Write 10 flirt sentences based on the example given."
-];
-let flirtENGIndex = 0;
-function copyFlirtENG(){
-  copyTextToClipboard(flirtsENG[flirtENGIndex]);
-  showToast('Flirt Closing copied!');
-  flirtENGIndex = (flirtENGIndex + 1) % flirtsENG.length;
-}
+`Job Description:
+📌 Main task: Chat with foreign men as a representative of girls. Messages are paid individually. No face-to-face meetings.
+📌 Topic: Flirt and social communication.
+📌 Goal: Gifts, facilitating the man's visit, meetings without your presence.
+📌 Requirements: Laptop, stable internet.
+📌 Schedule: 6:00 AM - 2:00 PM, 2:00 PM - 10:00 PM, 10:00 PM - 6:00 AM, 6/1 week (Philippines time)
+💵 Internship: 1-7 days.
+💵 Payment: After first week and on the 20th each month.
+💵 Rate: 40%.
+Choose your preferred shift.`,
 
-// ------------------ RU ------------------
-const greetingsRU = [
-"Добрый день! Мы компания ChaterLab. Есть ли у вас опыт работы в брачных агентствах?",
-"Добрый день! Представляем ChaterLab. Обладаете ли вы опытом работы в брачных агентствах?",
-"Добрый день! Компания ChaterLab интересуется, есть ли у вас опыт работы в брачных агентствах?",
-"Добрый день! Мы из ChaterLab. Приходилось ли вам работать в брачных агентствах?",
-"Добрый день! ChaterLab запрашивает информацию о вашем опыте работы в брачных агентствах.",
-"Добрый день! Представляем ChaterLab. Работали ли вы ранее с брачными агентствами?",
-"Добрый день! Мы компания ChaterLab. Имеется ли у вас практика работы в брачных агентствах?",
-"Добрый день! ChaterLab интересуется вашим опытом работы с брачными агентствами.",
-"Добрый день! Мы из ChaterLab. Обладаете ли вы опытом работы в брачных агентствах?",
-"Добрый день! Компания ChaterLab интересуется, есть ли у вас профессиональный опыт работы в брачных агентствах?",
-"Добрый день! ChaterLab запрашивает сведения о вашем опыте работы в брачных агентствах.",
-"Добрый день! Представляем ChaterLab. Есть ли у вас предыдущий опыт работы в
+`Job Description:
+📌 Task: Professional messaging with foreign men on behalf of girls. No in-person meetings.
+📌 Topic: Flirt, online dating.
+📌 Goal: Gifts, organize visits and meetings, without personal participation.
+📌 Requirements: Laptop, fast internet.
+📌 Schedule: 6:00 AM - 2:00 PM, 2:00 PM - 10:00 PM, 10:00 PM - 6:00 AM, 6 days/week, 1 day off (Philippines time)
+💵 Paid internship: 1-7 days.
+💵 Payment: Weekly after first week, then monthly.
+💵 Rate: 40%.
+Which shift works best?`,
+
+`Job Description:
+📌 Core task: Chat with foreign men as a girl’s representative. No physical meetings, paid per message.
+📌 Topic: Flirt, dating conversations.
+📌 Goal: Gifts, manage visits and meetings, without your attendance.
+📌 Requirements: Laptop, stable internet.
+📌 Schedule: 6:00 AM - 2:00 PM, 2:00 PM - 10:00 PM, 10:00 PM - 6:00 AM, 6/1 week (Philippines time)
+💵 Internship: 1-7 days.
+💵 Payment: After first week, then monthly.
+💵 Rate: 40%.
+Pick your preferred shift.`,
+
+`Job Description:
+📌 Task: Messaging foreign men on behalf of girls. Payment per message. No in-person meetings.
+📌 Topic: Flirt and online dating.
+📌 Goal: Gifts, coordinating visits and meetings without personal participation.
+📌 Requirements: Laptop, reliable internet.
+📌 Schedule: 6:00 AM - 2:00 PM, 2:00 PM - 10:00 PM, 10:00 PM - 6:00 AM, 6 days/week, 1 day off (Philippines time)
+💵 Internship: 1-7 days.
+💵 Payment: After first week, then on 20th.
+💵 Rate: 40%.
+Which shift suits you?`,
+
+`Job Description:
+📌 Task: Conduct chat conversations on behalf of girls. No face-to-face meetings.
+📌 Topic: Flirting, dating.
+📌 Goal: Gifts and managing men’s visits without your personal involvement.
+📌 Requirements: Laptop, fast internet.
+📌 Schedule: 6:00 AM - 2:00 PM, 2:00 PM - 10:00 PM, 10:00 PM - 6:00 AM, 6/1 week (Philippines time)
+💵 Paid internship: 1-7 days.
+💵 Payment: Weekly, then monthly.
+💵 Rate: 40%.
+Choose your shift.`,
+
+`Job Description:
+📌 Task: Messaging foreign men from girls’ accounts. No in-person interactions.
+📌 Topic: Flirt, online communication.
+📌 Goal: Gifts, visits, meetings—without personal involvement.
+📌 Requirements: Laptop, stable internet.
+📌 Schedule: 6:00 AM - 2:00 PM, 2:00 PM - 10:00 PM, 10:00 PM - 6:00 AM, 6 days/week, 1 day off (Philippines time)
+💵 Internship: 1-7 days.
+💵 Payment: After first week, then monthly.
+💵 Rate: 40%.
+Select your shift.`,
+
+`Job Description:
+📌 Task: Chat professionally with foreign men as a girl’s representative. Messages paid individually. No meetings required.
+📌 Topic: Flirt, dating.
+📌 Goal: Gifts, organize visits and meetings without personal attendance.
+📌 Requirements: Laptop, high-speed internet.
+📌 Schedule: 6:00 AM - 2:00 PM, 2:00 PM - 10:00 PM, 10:00 PM - 6:00 AM, 6/1 week (Philippines time)
+💵 Paid internship: 1-7 days.
+💵 Payment: After first week, then 20th.
+💵 Rate: 40%.
+Which shift works best?`,
+
+`Job Description:
+📌 Task: Conduct online conversations with foreign men on behalf of girls. No in-person meetings.
+📌 Topic: Flirt, romance.
+📌 Goal: Gifts and facilitating visits without candidate’s presence.
+📌 Requirements: Laptop, internet.
+📌 Schedule: 6:00 AM - 2:00 PM, 2:00 PM - 10:00 PM, 10:00 PM - 6:00 AM, 6 days/week, 1 day off (Philippines time)
+💵 Internship: 1-7 days.
+💵 Payment: After first week and monthly.
+💵 Rate: 40%.
+Pick your preferred shift.`,
+
+`Job Description:
+📌 Task: Professional chat with foreign men on behalf of girls. Payment per message. No physical meetings.
+📌 Topic: Flirt and dating.
+📌 Goal: Gifts, organize visits and meetings without personal involvement.
+📌 Requirements: Laptop, reliable internet.
+📌 Schedule: 6:00 AM - 2:00 PM, 2:00 PM - 10:00 PM, 10:00 PM - 6:00 AM, 6/1 week (Philippines time)
+💵 Paid internship: 1-7 days.
+💵 Payment: Weekly, then monthly.
+💵 Rate: 40%.
+Which shift suits you?`,
+
+`Job Description:
+📌 Task: Messaging foreign men as a girls’ representative. All work is online, no in-person meetings.
+📌 Topic: Flirt, online dating.
+📌 Goal: Gifts, coordinating visits and meetings without personal participation.
+📌 Requirements: Laptop, internet.
+📌 Schedule: 6:00 AM - 2:00 PM, 2:00 PM - 10:00 PM, 10:00 PM - 6:00 AM, 6 days/week, 1 day off (Philippines time)
+💵 Paid internship: 1-7 days.
+💵 Payment: After first week and 20th.
+💵 Rate: 40%.
+Choose your shift.`,
+
+`Job Description:
+📌 Task: Conduct online conversations with foreign men on behalf of girls. Messages paid individually. No personal meetings.
+📌 Topic: Flirt and romance.
+📌 Goal: Gifts, organize visits and meetings without your attendance.
+📌 Requirements: Laptop, fast internet.
+📌 Schedule: 6:00 AM - 2:00 PM, 2:00 PM - 10:00 PM, 10:00 PM - 6:00 AM, 6/1 week (Philippines time)
+💵 Internship: 1-7 days.
+💵 Payment: Weekly, then monthly.
+💵 Rate: 40%.
+Which shift works for you?`,
+
+`Job Description:
+📌 Task: Chat on behalf of girls with foreign men. Payment per message. No in-person meetings required.
+📌 Topic: Flirt, dating communication.
+📌 Goal: Gifts, coordinate visits and meetings without personal involvement.
+📌 Requirements: Laptop, internet.
+📌 Schedule: 6:00 AM - 2:00 PM, 2:00 PM - 10:00 PM, 10:00 PM - 6:00 AM, 6 days/week, 1 day off (Philippines time)
+💵 Paid internship: 1-7 days.
+💵 Payment: After first week and 20th.
+💵 Rate: 40%.
+Pick your shift.`,
+
+`Job Description:
+📌 Task: Chat professionally with foreign men as a representative of girls. No in-person meetings.
+📌 Topic: Flirt, romance.
+📌 Goal: Gifts, manage visits and meetings without personal attendance.
+📌 Requirements: Laptop, fast internet.
+📌 Schedule: 6:00 AM - 2:00 PM, 2:00 PM - 10:00 PM, 10:00 PM - 6:00 AM, 6/1 week (Philippines time)
+💵 Paid internship: 1-7 days.
+💵 Payment: Weekly, then monthly.
+💵 Rate: 40%.
+Which shift do you prefer?`,
+
+`Job Description:
+📌 Task: Professional messaging with foreign men on behalf of girls. All correspondence online, no in-person meetings.
+📌 Topic: Flirt and dating.
+📌 Goal: Gifts, organize visits and meetings without attending personally.
+📌 Requirements: Laptop, reliable internet.
+📌 Schedule: 6:00 AM - 2:00 PM, 2:00 PM - 10:00 PM, 10:00 PM - 6:00 AM, 6 days/week, 1 day off (Philippines time)
+💵 Paid internship: 1-7 days.
+💵 Payment: After first week and 20th.
+💵 Rate: 40%.
+Which shift fits you best?`,
+
+`Job Description:
+📌 Task: Chat online with foreign men representing girls. Messages are paid individually, no face-to-face meetings.
+📌 Topic: Flirt and social interaction.
+📌 Goal: Gifts, coordinate visits and meetings without your participation.
+📌 Requirements: Laptop, internet.
+📌 Schedule: 6:00 AM - 2:00 PM, 2:00 PM - 10:00 PM, 10:00 PM - 6:00 AM, 6/1 week (Philippines time)
+💵 Paid internship: 1-7 days.
+💵 Payment: Weekly and 20th of each month.
+💵 Rate: 40%.
+Choose your preferred shift.`
+    ];
+    let jobENGIndex = 0;
+    function copyJobENG(){
+      navigator.clipboard.writeText(jobDescriptionsENG[jobENGIndex]);
+      alert("Copied Job Description:\n"+jobDescriptionsENG[jobENGIndex]);
+      jobENGIndex = (jobENGIndex + 1) % jobDescriptionsENG.length;
+    }
+
+    const flirtsENG = [
+      "Please make 10 phrases for flirting, following the example.",
+      "Kindly create 10 flirting phrases according to the example.",
+      "Write 10 flirt messages, following the example provided.",
+      "Make 10 flirting phrases, based on the sample.",
+      "Please generate 10 flirt phrases following the given example.",
+      "Create 10 flirting sentences according to the example.",
+      "Write 10 phrases for flirting, using the example as a guide.",
+      "Please compose 10 flirting phrases following the example.",
+      "Make 10 flirt messages based on the provided example.",
+      "Generate 10 phrases for flirting according to the example.",
+      "Create 10 flirt sentences following the given sample.",
+      "Please write 10 flirting messages using the example.",
+      "Compose 10 phrases for flirting, following the model provided.",
+      "Kindly make 10 flirting phrases, following the example.",
+      "Write 10 flirt sentences based on the example given."
+    ];
+    let flirtENGIndex = 0;
+    function copyFlirtENG(){
+      navigator.clipboard.writeText(flirtsENG[flirtENGIndex]);
+      alert("Copied Flirt Closing Instruction:\n"+flirtsENG[flirtENGIndex]);
+      flirtENGIndex = (flirtENGIndex + 1) % flirtsENG.length;
+    }
+
+    // ================== RU ==================
+    const greetingsRU = [
+      "Добрый день! Мы компания ChaterLab и хотели бы узнать, есть ли у вас опыт работы в брачных агентствах. Будем рады вашему ответу.",
+      "Здравствуйте! Представляем ChaterLab. Можете ли вы поделиться, работали ли вы ранее в брачных агентствах и какой у вас был опыт?",
+      "Добрый день! Компания ChaterLab интересуется вашим профессиональным опытом в брачных агентствах. Расскажите, пожалуйста, если есть такой опыт.",
+      "Приветствуем! Мы из ChaterLab и хотели бы уточнить: занимались ли вы ранее работой в брачных агентствах?",
+      "Добрый день! ChaterLab ищет специалистов с опытом работы в брачных агентствах. Поделитесь, пожалуйста, вашими достижениями и опытом.",
+      "Здравствуйте! Представляем ChaterLab. Интересно узнать, сталкивались ли вы с работой в брачных агентствах и насколько она вам знакома.",
+      "Добрый день! Мы компания ChaterLab. Был ли у вас опыт работы в брачных агентствах, которым вы могли бы поделиться?",
+      "Приветствуем! ChaterLab хотела бы узнать о вашем опыте работы с брачными агентствами, если такой есть.",
+      "Здравствуйте! Мы из ChaterLab. Можете ли вы рассказать о вашем опыте взаимодействия с брачными агентствами?",
+      "Добрый день! Компания ChaterLab интересуется вашим профессиональным опытом в сфере брачных агентств. Поделитесь, пожалуйста.",
+      "Здравствуйте! ChaterLab ищет людей с опытом работы в брачных агентствах. Поделитесь своим опытом и достижениями, если они есть.",
+      "Приветствуем! Представляем ChaterLab. Есть ли у вас предыдущий опыт работы в брачных агентствах? Будем рады услышать подробности.",
+      "Добрый день! Мы компания ChaterLab и хотели бы узнать, имели ли вы опыт работы в брачных агентствах и чем он был полезен.",
+      "Здравствуйте! ChaterLab интересуется вашим опытом работы с брачными агентствами. Расскажите, пожалуйста, о ваших проектах или обязанностях.",
+      "Добрый день! Представляем ChaterLab. Поделитесь, пожалуйста, вашим опытом работы в брачных агентствах, если он у вас есть."
+    ];
+    let greetingRUIndex = 0;
+    function copyGreetingRU(){
+      navigator.clipboard.writeText(greetingsRU[greetingRUIndex]);
+      alert("Приветствие скопировано:\n"+greetingsRU[greetingRUIndex]);
+      greetingRUIndex = (greetingRUIndex + 1) % greetingsRU.length;
+    }
+
+    const jobDescriptionsRU = [
+`Описание вакансии:
+📌 Задача: Ведение переписки с иностранными мужчинами от имени девушек. Личные встречи не требуются.
+📌 Тематика: Флирт и знакомства.
+📌 Цель: Получение подарков, организация приезда мужчины и встречи, без участия кандидата.
+📌 Требования: Высокоскоростной интернет и ноутбук.
+📌 График работы: 6:00 - 14:00, 14:00 - 22:00, 22:00 - 6:00, 6 дней в неделю, 1 выходной (Kyiv time)
+💵 Стажировка: 1-7 дней.
+💵 Выплаты: После первой недели, далее 20 числа.
+💵 Ставка: 40% от переписки.
+Какой график вам подходит?`,
+
+`Описание вакансии:
+📌 Основная задача: Переписка с иностранными мужчинами от лица девушек. Оплата за каждое сообщение. Личных встреч нет.
+📌 Тематика общения: Флирт и романтическое общение.
+📌 Цель: Подарки, организация приезда мужчины, встречи без личного участия кандидата.
+📌 Требования: Ноутбук, стабильный интернет.
+📌 График работы: 6:00 - 14:00, 14:00 - 22:00, 22:00 - 6:00, 6/1 (Kyiv time)
+💵 Стажировка: 1-7 дней.
+💵 Выплаты: После первой недели и ежемесячно 20 числа.
+💵 Ставка: 40%.
+Выберите удобный график.`,
+
+`Описание вакансии:
+📌 Задача: Ведение переписки с иностранными мужчинами от имени девушек, оплата за каждое сообщение. Кандидат не участвует во встречах.
+📌 Тематика: Знакомства, флирт.
+📌 Цель: Подарки, приезд мужчины и встречи, без личного участия.
+📌 Требования: Ноутбук, быстрый интернет.
+📌 График: 6:00 - 14:00, 14:00 - 22:00, 22:00 - 6:00, 6 дней, 1 выходной (Kyiv time)
+💵 Стажировка: 1-7 дней.
+💵 Выплаты: После первой недели, далее 20 числа.
+💵 Ставка: 40%.
+Какой график вам удобен?`,
+
+`Описание вакансии:
+📌 Основная работа: Переписка от лица девушек с иностранными мужчинами. Оплата за сообщения. Личных встреч нет.
+📌 Тематика: Флирт, знакомства.
+📌 Цель: Подарки, организация приезда мужчины и встречи без участия кандидата.
+📌 Требования: Ноутбук и интернет.
+📌 График работы: 6:00 - 14:00, 14:00 - 22:00, 22:00 - 6:00, 6/1 (Kyiv time)
+💵 Стажировка: 1-7 дней.
+💵 Выплаты: После первой недели, далее 20 числа.
+💵 Ставка: 40%.
+Выберите удобный график.`,
+
+`Описание вакансии:
+📌 Задача: Профессиональная переписка с иностранными мужчинами от имени девушек. Личные встречи не требуются.
+📌 Тематика: Знакомства и флирт.
+📌 Цель: Подарки, контроль приезда мужчины и встреч, без личного участия.
+📌 Требования: Ноутбук, стабильный интернет.
+📌 График: 6:00 - 14:00, 14:00 - 22:00, 22:00 - 6:00, 6 дней, 1 выходной (Kyiv time)
+💵 Стажировка: 1-7 дней.
+💵 Выплаты: После первой недели и 20 числа.
+💵 Ставка: 40%.
+Какой график будет удобен?`,
+
+`Описание вакансии:
+📌 Задача: Ведение переписки от имени девушек с иностранными мужчинами, оплата за каждое сообщение. Встречи не требуются.
+📌 Тематика: Флирт, романтическое общение.
+📌 Цель: Подарки и организация приезда мужчины без участия кандидата.
+📌 Требования: Ноутбук, быстрый интернет.
+📌 График: 6:00 - 14:00, 14:00 - 22:00, 22:00 - 6:00, 6/1 (Kyiv time)
+💵 Стажировка: 1-7 дней.
+💵 Выплаты: После первой недели и далее 20 числа.
+💵 Ставка: 40%.
+Выберите график.`,
+
+`Описание вакансии:
+📌 Основная задача: Переписка с иностранными мужчинами от имени девушек. Личных встреч нет.
+📌 Тематика: Флирт и знакомства.
+📌 Цель: Подарки, контроль приезда мужчины и встреч, без участия кандидата.
+📌 Требования: Ноутбук и быстрый интернет.
+📌 График работы: 6:00 - 14:00, 14:00 - 22:00, 22:00 - 6:00, 6 дней, 1 выходной (Kyiv time)
+💵 Стажировка: 1-7 дней.
+💵 Выплаты: После первой недели, далее 20 числа.
+💵 Ставка: 40%.
+Какой график вам подходит?`,
+
+`Описание вакансии:
+📌 Задача: Переписка с иностранными мужчинами от лица девушек, оплата за каждое сообщение. Кандидат не посещает встречи.
+📌 Тематика: Знакомства и флирт.
+📌 Цель: Подарки, организация приезда мужчины и встреч без участия кандидата.
+📌 Требования: Ноутбук, интернет.
+📌 График работы: 6:00 - 14:00, 14:00 - 22:00, 22:00 - 6:00, 6/1 (Kyiv time)
+💵 Стажировка: 1-7 дней.
+💵 Выплаты: После первой недели и 20 числа.
+💵 Ставка: 40%.
+Выберите график.`,
+
+`Описание вакансии:
+📌 Основная работа: Переписка от имени девушек с иностранными мужчинами. Личных встреч нет, оплата за каждое сообщение.
+📌 Тематика: Флирт, романтическое общение.
+📌 Цель: Подарки, приезд мужчины и встречи без участия кандидата.
+📌 Требования: Ноутбук и быстрый интернет.
+📌 График: 6:00 - 14:00, 14:00 - 22:00, 22:00 - 6:00, 6/1 (Kyiv time)
+💵 Стажировка: 1-7 дней.
+💵 Выплаты: После первой недели и 20 числа.
+💵 Ставка: 40%.
+Какой график удобен?`,
+
+`Описание вакансии:
+📌 Задача: Ведение переписки с иностранными мужчинами от имени девушек, оплата за сообщения. Встречи не требуются.
+📌 Тематика: Знакомства и флирт.
+📌 Цель: Подарки и организация приезда мужчины без участия кандидата.
+📌 Требования: Ноутбук, стабильный интернет.
+📌 График работы: 6:00 - 14:00, 14:00 - 22:00, 22:00 - 6:00, 6 дней, 1 выходной (Kyiv time)
+💵 Стажировка: 1-7 дней.
+💵 Выплаты: После первой недели и 20 числа.
+💵 Ставка: 40%.
+Выберите график.`,
+
+`Описание вакансии:
+📌 Основная задача: Переписка с иностранными мужчинами от лица девушек. Оплата за каждое сообщение, личные встречи не требуются.
+📌 Тематика: Флирт, знакомства.
+📌 Цель: Подарки, контроль приезда мужчины и встречи без участия кандидата.
+📌 Требования: Ноутбук, интернет.
+📌 График: 6:00 - 14:00, 14:00 - 22:00, 22:00 - 6:00, 6/1 (Kyiv time)
+💵 Стажировка: 1-7 дней.
+💵 Выплаты: После первой недели и 20 числа.
+💵 Ставка: 40%.
+Какой график удобен?`,
+
+`Описание вакансии:
+📌 Задача: Переписка с иностранными мужчинами от имени девушек. Личных встреч нет.
+📌 Тематика: Флирт и знакомства.
+📌 Цель: Подарки, организация приезда мужчины без участия кандидата.
+📌 Требования: Ноутбук, стабильный интернет.
+📌 График работы: 6:00 - 14:00, 14:00 - 22:00, 22:00 - 6:00, 6/1 (Kyiv time)
+💵 Стажировка: 1-7 дней.
+💵 Выплаты: После первой недели и 20 числа.
+💵 Ставка: 40%.
+Выберите график.`,
+
+`Описание вакансии:
+📌 Основная задача: Ведение переписки с иностранными мужчинами от лица девушек. Личные встречи не требуются.
+📌 Тематика: Флирт и романтическое общение.
+📌 Цель: Подарки, контроль приезда мужчины и встреч без участия кандидата.
+📌 Требования: Ноутбук и интернет.
+📌 График: 6:00 - 14:00, 14:00 - 22:00, 22:00 - 6:00, 6 дней, 1 выходной (Kyiv time)
+💵 Стажировка: 1-7 дней.
+💵 Выплаты: После первой недели и 20 числа.
+💵 Ставка: 40%.
+Какой график удобен?`,
+
+`Описание вакансии:
+📌 Задача: Переписка от имени девушек с иностранными мужчинами. Личные встречи не требуются, оплата за каждое сообщение.
+📌 Тематика: Флирт и знакомства.
+📌 Цель: Подарки и организация приезда мужчины без участия кандидата.
+📌 Требования: Ноутбук, быстрый интернет.
+📌 График работы: 6:00 - 14:00, 14:00 - 22:00, 22:00 - 6:00, 6/1 (Kyiv time)
+💵 Стажировка: 1-7 дней.
+💵 Выплаты: После первой недели и 20 числа.
+💵 Ставка: 40%.
+Выберите график.`,
+
+`Описание вакансии:
+📌 Основная работа: Ведение переписки с иностранными мужчинами от лица девушек, личные встречи не требуются. Оплата за каждое сообщение.
+📌 Тематика: Флирт и знакомства.
+📌 Цель: Подарки, контроль приезда мужчины и встреч без участия кандидата.
+📌 Требования: Ноутбук и стабильный интернет.
+📌 График: 6:00 - 14:00, 14:00 - 22:00, 22:00 - 6:00, 6 дней, 1 выходной (Kyiv time)
+💵 Стажировка: 1-7 дней.
+💵 Выплаты: После первой недели и 20 числа.
+💵 Ставка: 40%.
+Какой график вам подходит?`
+    ];
+    let jobRUIndex = 0;
+    function copyJobRU(){
+      navigator.clipboard.writeText(jobDescriptionsRU[jobRUIndex]);
+      alert("Описание вакансии скопировано:\n"+jobDescriptionsRU[jobRUIndex]);
+      jobRUIndex = (jobRUIndex + 1) % jobDescriptionsRU.length;
+    }
+
+    const flirtsRU = [
+      "Пожалуйста, составьте 10 фраз для флирта на основе приведённого примера.",
+      "Составьте 10 флирт-фраз согласно предоставленному образцу.",
+      "Напишите 10 сообщений для флирта, следуя примеру.",
+      "Создайте 10 флирт-фраз по образцу.",
+      "Сгенерируйте 10 фраз для флирта на основе примера.",
+      "Составьте 10 предложений для флирта согласно образцу.",
+      "Подготовьте 10 флирт-фраз, используя пример как руководство.",
+      "Пожалуйста, подготовьте 10 фраз для флирта, следуя примеру.",
+      "Составьте 10 сообщений для флирта по предоставленному образцу.",
+      "Сгенерируйте 10 флирт-фраз согласно предоставленному примеру.",
+      "Создайте 10 предложений для флирта по образцу.",
+      "Пожалуйста, напишите 10 сообщений для флирта, используя пример.",
+      "Составьте 10 фраз для флирта, следуя модели примера.",
+      "Пожалуйста, создайте 10 флирт-фраз, следуя примеру.",
+      "Напишите 10 флирт-предложений на основе предоставленного образца."
+    ];
+    let flirtRUIndex = 0;
+    function copyFlirtRU(){
+      navigator.clipboard.writeText(flirtsRU[flirtRUIndex]);
+      alert("Инструкция для тестового задания скопирована:\n"+flirtsRU[flirtRUIndex]);
+      flirtRUIndex = (flirtRUIndex + 1) % flirtsRU.length;
+    }
+  </script>
+</body>
+</html>
