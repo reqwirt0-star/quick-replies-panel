@@ -108,7 +108,6 @@
       padding: 20px;
       margin-bottom: 20px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-      /* Убираем overflow-x: auto, так как таблицы теперь адаптивны */
     }
     .step h4 {
       margin: 0 0 10px;
@@ -207,6 +206,7 @@
       .info {
         padding: 20px; 
       }
+      /* На мобильных, info скрыт по умолчанию, пока не активирован переключателем */
       .info {
         display: none;
       }
@@ -297,23 +297,10 @@
 
     // =========================================================================
     // 1. АРХИВЫ С ТЕКСТАМИ И ИНДЕКСАМИ ДЛЯ ЦИКЛИЧЕСКОГО ПЕРЕКЛЮЧЕНИЯ
-    // (Полный код массивов - сохранен без изменений)
+    // (FIX: Убрано дублирование const-переменных, из-за которого ломался скрипт)
     // =========================================================================
-    // NOTE: For brevity, the large text arrays (greetingsENG, jobDescriptionsENG, etc.) are omitted here but assumed to be present in the final functional code.
 
     // ENGLISH ARRAYS AND INDEXES
-    const greetingsENG = [ /* ... 15 variations ... */ ]; let indexGreetingENG = 0;
-    const jobDescriptionsENG = [ /* ... 15 variations ... */ ]; let indexJobENG = 0;
-    const flirtClosingsENG = [ /* ... 15 variations ... */ ]; let indexFlirtENG = 0;
-    const contactsENG = [ /* ... 15 variations ... */ ]; let indexContactENG = 0;
-
-    // RUSSIAN ARRAYS AND INDEXES
-    const greetingsRU = [ /* ... 15 variations ... */ ]; let indexGreetingRU = 0;
-    const jobDescriptionsRU = [ /* ... 15 variations ... */ ]; let indexJobRU = 0;
-    const flirtClosingsRU = [ /* ... 15 variations ... */ ]; let indexFlirtRU = 0;
-    const contactsRU = [ /* ... 15 variations ... */ ]; let indexContactRU = 0;
-
-    // (Full arrays from previous response are included here for completeness)
     const greetingsENG = [
         "Good day! We are ChaterLab. Do you have experience working in marriage agencies?",
         "Good day! This is ChaterLab. Have you ever worked in marriage agencies?",
@@ -742,18 +729,23 @@ Pick your preferred shift.`,
     // 2. ФУНКЦИИ КОПИРОВАНИЯ С ТОСТ-УВЕДОМЛЕНИЕМ И ВИБРАЦИЕЙ
     // =========================================================================
 
+    /**
+     * Показывает неблокирующее тост-уведомление и запускает вибрацию (если доступно).
+     * @param {string} message - Текст для отображения.
+     */
     function showToast(message) {
         const toast = document.getElementById('toast');
         toast.textContent = message;
         toast.classList.add('show');
         
+        // Добавляем тактильную обратную связь (короткая вибрация)
         if (navigator.vibrate) {
             navigator.vibrate(50); 
         }
 
         setTimeout(() => {
             toast.classList.remove('show');
-        }, 2000);
+        }, 2000); // Скрыть через 2 секунды
     }
 
     function fallbackCopyTextToClipboard(text) {
@@ -1053,6 +1045,7 @@ Pick your preferred shift.`,
         const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
         if (!isMobile) {
+            // На десктопе всегда показываем оба блока
             sidebar.style.display = 'block'; 
             info.style.display = 'block'; 
             return;
@@ -1074,13 +1067,15 @@ Pick your preferred shift.`,
     // Инициализация при загрузке страницы
     window.addEventListener('load', () => {
         setLanguage(currentLang); 
+        // При загрузке на мобильном показываем блок кнопок по умолчанию
         toggleMobileView('buttons');
     });
 
     // Инициализация при изменении размера (для десктопа/планшета)
     window.addEventListener('resize', () => {
+        // При изменении размера проверяем, не перешли ли мы на десктоп
         if (!window.matchMedia("(max-width: 768px)").matches) {
-            toggleMobileView('buttons');
+            toggleMobileView('buttons'); // Принудительно показываем оба блока
         }
     });
   </script>
